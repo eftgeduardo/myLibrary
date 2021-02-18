@@ -5,12 +5,16 @@
  */
 package mylibrary;
 
+import controlers.BooksJpaController;
+import controlers.exceptions.NonexistentEntityException;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import entities.Books;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -27,7 +31,7 @@ public class Visual extends javax.swing.JFrame {
         
     }
     private void loadTable(){
-        /*DefaultTableModel model= new DefaultTableModel();
+        DefaultTableModel model= new DefaultTableModel();
             //`id`, `title`, `editorial`, `author`, `existences`, `shelve`
             model.addColumn("id");
             model.addColumn("title");
@@ -35,11 +39,13 @@ public class Visual extends javax.swing.JFrame {
             model.addColumn("author");
             model.addColumn("existences");
             model.addColumn("shelve");
-            List<Book> listBooks = new ArrayList<Book>();
-            listBooks = (new Book()).consult();//get all bookd
+            List<Books> listBooks = new ArrayList<Books>();
+            BooksJpaController bjc =new BooksJpaController();
+            listBooks = bjc.findBooksEntities();
+            
 
             String data[]=new String[6];
-            for (Book b: listBooks){
+            for (Books b: listBooks){
                 data[0]= String.valueOf(b.getId());
                 data[1]= b.getTitle();
                 data[2]= b.getEditorial();
@@ -100,6 +106,11 @@ public class Visual extends javax.swing.JFrame {
         btnAdd.setBounds(520, 270, 50, 24);
 
         btnDelete.setText("delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnDelete);
         btnDelete.setBounds(580, 270, 70, 24);
 
@@ -115,52 +126,16 @@ public class Visual extends javax.swing.JFrame {
         btnModify.setText("modify");
         getContentPane().add(btnModify);
         btnModify.setBounds(660, 270, 70, 24);
-
-        txtId.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtIdActionPerformed(evt);
-            }
-        });
         getContentPane().add(txtId);
         txtId.setBounds(590, 70, 60, 24);
-
-        txtTitle.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtTitleActionPerformed(evt);
-            }
-        });
         getContentPane().add(txtTitle);
         txtTitle.setBounds(590, 100, 220, 24);
-
-        txtEditorial.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtEditorialActionPerformed(evt);
-            }
-        });
         getContentPane().add(txtEditorial);
         txtEditorial.setBounds(590, 130, 220, 24);
-
-        txtAuthor.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtAuthorActionPerformed(evt);
-            }
-        });
         getContentPane().add(txtAuthor);
         txtAuthor.setBounds(590, 160, 220, 24);
-
-        txtExistences.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtExistencesActionPerformed(evt);
-            }
-        });
         getContentPane().add(txtExistences);
         txtExistences.setBounds(590, 190, 220, 24);
-
-        txtShelve.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtShelveActionPerformed(evt);
-            }
-        });
         getContentPane().add(txtShelve);
         txtShelve.setBounds(590, 220, 220, 24);
 
@@ -199,6 +174,11 @@ public class Visual extends javax.swing.JFrame {
         tblBooks.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         tblBooks.setDoubleBuffered(true);
         tblBooks.setVerifyInputWhenFocusTarget(false);
+        tblBooks.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblBooksMouseClicked(evt);
+            }
+        });
         jScrollPane.setViewportView(tblBooks);
 
         getContentPane().add(jScrollPane);
@@ -207,30 +187,21 @@ public class Visual extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void txtAuthorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtAuthorActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtAuthorActionPerformed
-
-    private void txtEditorialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEditorialActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtEditorialActionPerformed
-
-    private void txtTitleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTitleActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtTitleActionPerformed
-
-    private void txtIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIdActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtIdActionPerformed
-
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         Books books = new Books();
-        
-        
+        books.setAuthor(txtAuthor.getText());
+        books.setEditorial(txtEditorial.getText());
+        books.setExistences(Integer.parseInt(txtExistences.getText()));
+        //books.setId(WIDTH);
+        books.setShelve(txtShelve.getText());
+        books.setTitle(txtTitle.getText());
+        BooksJpaController bjc =new BooksJpaController();
+        bjc.create(books);
+        loadTable();
         /*Book book = new Book(Integer.parseInt(txtId.getText()), txtTitle.getText(), 
                 txtEditorial.getText(), txtAuthor.getText(),
                 Integer.parseInt(txtExistences.getText()), txtShelve.getText());
@@ -242,17 +213,34 @@ public class Visual extends javax.swing.JFrame {
         else{
             JOptionPane.showMessageDialog(null,"Problem");
         }*/
-        loadTable();
+        
         //txtAuthor.getText();        // TODO add your handling code here:
     }//GEN-LAST:event_btnAddActionPerformed
 
-    private void txtExistencesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtExistencesActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtExistencesActionPerformed
+    private void tblBooksMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBooksMouseClicked
 
-    private void txtShelveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtShelveActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtShelveActionPerformed
+        txtId.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 0)));
+        txtTitle.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 1)));
+        txtEditorial.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 2)));
+        txtAuthor.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 3)));
+        txtExistences.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 4)));
+        txtShelve.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 5)));
+  
+    }//GEN-LAST:event_tblBooksMouseClicked
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        try {
+            Books books = new Books();
+            BooksJpaController bjc =new BooksJpaController();
+            System.out.println("entero = "+Integer.parseInt(txtId.getText()));
+            bjc.destroy(Integer.parseInt(txtId.getText()));
+            loadTable();
+            
+            // TODO add your handling code here:
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(Visual.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**
      * @param args the command line arguments
