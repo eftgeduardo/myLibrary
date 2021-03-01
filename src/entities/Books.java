@@ -31,7 +31,7 @@ import javax.persistence.Table;
     @NamedQuery(name = "Books.findByExistences", query = "SELECT b FROM Books b WHERE b.existences = :existences"),
     @NamedQuery(name = "Books.findByShelve", query = "SELECT b FROM Books b WHERE b.shelve = :shelve")})
 public class Books implements Serializable {
-
+    
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
