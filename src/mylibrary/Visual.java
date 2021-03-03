@@ -87,6 +87,7 @@ public class Visual extends javax.swing.JFrame {
         lblShelve = new javax.swing.JLabel();
         jScrollPane = new javax.swing.JScrollPane();
         tblBooks = new javax.swing.JTable();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(840, 420));
@@ -184,12 +185,41 @@ public class Visual extends javax.swing.JFrame {
         getContentPane().add(jScrollPane);
         jScrollPane.setBounds(10, 50, 500, 307);
 
+        jButton1.setText("Log out");
+        getContentPane().add(jButton1);
+        jButton1.setBounds(930, 150, 80, 24);
+
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void tblBooksMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBooksMouseClicked
+
+        txtId.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 0)));
+        txtTitle.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 1)));
+        txtEditorial.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 2)));
+        txtAuthor.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 3)));
+        txtExistences.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 4)));
+        txtShelve.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 5)));
+
+    }//GEN-LAST:event_tblBooksMouseClicked
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnExitActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        try {
+            Books books = new Books();
+            BooksJpaController bjc =new BooksJpaController();
+            System.out.println("entero = "+Integer.parseInt(txtId.getText()));
+            bjc.destroy(Integer.parseInt(txtId.getText()));
+            loadTable();
+
+            // TODO add your handling code here:
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(Visual.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
         Books books = new Books();
@@ -202,9 +232,9 @@ public class Visual extends javax.swing.JFrame {
         BooksJpaController bjc =new BooksJpaController();
         bjc.create(books);
         loadTable();
-        /*Book book = new Book(Integer.parseInt(txtId.getText()), txtTitle.getText(), 
-                txtEditorial.getText(), txtAuthor.getText(),
-                Integer.parseInt(txtExistences.getText()), txtShelve.getText());
+        /*Book book = new Book(Integer.parseInt(txtId.getText()), txtTitle.getText(),
+            txtEditorial.getText(), txtAuthor.getText(),
+            Integer.parseInt(txtExistences.getText()), txtShelve.getText());
 
         //System.out.print(book.toString());
         if(book.add()){
@@ -213,34 +243,9 @@ public class Visual extends javax.swing.JFrame {
         else{
             JOptionPane.showMessageDialog(null,"Problem");
         }*/
-        
+
         //txtAuthor.getText();        // TODO add your handling code here:
     }//GEN-LAST:event_btnAddActionPerformed
-
-    private void tblBooksMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBooksMouseClicked
-
-        txtId.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 0)));
-        txtTitle.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 1)));
-        txtEditorial.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 2)));
-        txtAuthor.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 3)));
-        txtExistences.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 4)));
-        txtShelve.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 5)));
-  
-    }//GEN-LAST:event_tblBooksMouseClicked
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        try {
-            Books books = new Books();
-            BooksJpaController bjc =new BooksJpaController();
-            System.out.println("entero = "+Integer.parseInt(txtId.getText()));
-            bjc.destroy(Integer.parseInt(txtId.getText()));
-            loadTable();
-            
-            // TODO add your handling code here:
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(Visual.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnDeleteActionPerformed
 
     /**
      * @param args the command line arguments
@@ -283,6 +288,7 @@ public class Visual extends javax.swing.JFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnModify;
+    private javax.swing.JButton jButton1;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JLabel lblAuthor;
     private javax.swing.JLabel lblEditorial;

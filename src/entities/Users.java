@@ -9,8 +9,6 @@ import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -25,21 +23,17 @@ import javax.persistence.Table;
 @NamedQueries({
     @NamedQuery(name = "Users.findAll", query = "SELECT u FROM Users u"),
     @NamedQuery(name = "Users.findById", query = "SELECT u FROM Users u WHERE u.id = :id"),
-    @NamedQuery(name = "Users.findByUserName", query = "SELECT u FROM Users u WHERE u.userName = :userName"),
     @NamedQuery(name = "Users.findByFistName", query = "SELECT u FROM Users u WHERE u.fistName = :fistName"),
     @NamedQuery(name = "Users.findByLastName", query = "SELECT u FROM Users u WHERE u.lastName = :lastName"),
-    @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password")})
+    @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password"),
+    @NamedQuery(name = "Users.findByUserType", query = "SELECT u FROM Users u WHERE u.userType = :userType")})
 public class Users implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "id")
     private Integer id;
-    @Basic(optional = false)
-    @Column(name = "userName")
-    private String userName;
     @Basic(optional = false)
     @Column(name = "fistName")
     private String fistName;
@@ -49,6 +43,9 @@ public class Users implements Serializable {
     @Basic(optional = false)
     @Column(name = "password")
     private String password;
+    @Basic(optional = false)
+    @Column(name = "userType")
+    private boolean userType;
 
     public Users() {
     }
@@ -57,12 +54,12 @@ public class Users implements Serializable {
         this.id = id;
     }
 
-    public Users(Integer id, String userName, String fistName, String lastName, String password) {
+    public Users(Integer id, String fistName, String lastName, String password, boolean userType) {
         this.id = id;
-        this.userName = userName;
         this.fistName = fistName;
         this.lastName = lastName;
         this.password = password;
+        this.userType = userType;
     }
 
     public Integer getId() {
@@ -71,14 +68,6 @@ public class Users implements Serializable {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
     public String getFistName() {
@@ -103,6 +92,14 @@ public class Users implements Serializable {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public boolean getUserType() {
+        return userType;
+    }
+
+    public void setUserType(boolean userType) {
+        this.userType = userType;
     }
 
     @Override

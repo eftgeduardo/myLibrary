@@ -6,7 +6,9 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -31,6 +34,9 @@ import javax.persistence.Table;
     @NamedQuery(name = "Books.findByExistences", query = "SELECT b FROM Books b WHERE b.existences = :existences"),
     @NamedQuery(name = "Books.findByShelve", query = "SELECT b FROM Books b WHERE b.shelve = :shelve")})
 public class Books implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idBooks")
+    private Collection<Borrowed> borrowedCollection;
     
     private static final long serialVersionUID = 1L;
     @Id
@@ -127,6 +133,14 @@ public class Books implements Serializable {
     @Override
     public String toString() {
         return "entities.Books[ id=" + id + " ]";
+    }
+
+    public Collection<Borrowed> getBorrowedCollection() {
+        return borrowedCollection;
+    }
+
+    public void setBorrowedCollection(Collection<Borrowed> borrowedCollection) {
+        this.borrowedCollection = borrowedCollection;
     }
     
 }

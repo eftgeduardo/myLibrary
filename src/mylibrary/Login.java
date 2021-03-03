@@ -5,6 +5,22 @@
  */
 package mylibrary;
 
+import controlers.UsersJpaController;
+import entities.Users;
+
+
+
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.DocumentFilter;
+import javax.swing.text.PlainDocument;
+
+
+
 /**
  *
  * @author Ricardo
@@ -16,6 +32,9 @@ public class Login extends javax.swing.JFrame {
      */
     public Login() {
         initComponents();
+        PlainDocument doc = (PlainDocument) txtUser.getDocument();
+        doc.setDocumentFilter(new MyIntFilter());
+        
     }
 
     /**
@@ -27,59 +46,94 @@ public class Login extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField2 = new javax.swing.JTextField();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jPasswordField1 = new javax.swing.JPasswordField();
-        jLabel3 = new javax.swing.JLabel();
+        txtUser = new javax.swing.JTextField();
+        lblPassword = new javax.swing.JLabel();
+        lblUser = new javax.swing.JLabel();
+        btnLogin = new javax.swing.JButton();
+        pwPassword = new javax.swing.JPasswordField();
+        Title = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(400, 300));
         getContentPane().setLayout(null);
-        getContentPane().add(jTextField2);
-        jTextField2.setBounds(150, 80, 140, 24);
 
-        jLabel1.setText("Password");
-        getContentPane().add(jLabel1);
-        jLabel1.setBounds(70, 120, 56, 16);
-
-        jLabel2.setText("User");
-        getContentPane().add(jLabel2);
-        jLabel2.setBounds(100, 90, 27, 16);
-
-        jButton1.setText("Log in");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        txtUser.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
+        txtUser.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                txtUserActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1);
-        jButton1.setBounds(170, 170, 70, 24);
+        getContentPane().add(txtUser);
+        txtUser.setBounds(150, 80, 140, 24);
 
-        jPasswordField1.addActionListener(new java.awt.event.ActionListener() {
+        lblPassword.setText("Password");
+        getContentPane().add(lblPassword);
+        lblPassword.setBounds(70, 120, 56, 16);
+
+        lblUser.setText("User");
+        getContentPane().add(lblUser);
+        lblUser.setBounds(100, 90, 27, 16);
+
+        btnLogin.setText("Log in");
+        btnLogin.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPasswordField1ActionPerformed(evt);
+                btnLoginActionPerformed(evt);
             }
         });
-        getContentPane().add(jPasswordField1);
-        jPasswordField1.setBounds(150, 120, 140, 22);
+        getContentPane().add(btnLogin);
+        btnLogin.setBounds(170, 170, 70, 24);
 
-        jLabel3.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
-        jLabel3.setText("Library");
-        getContentPane().add(jLabel3);
-        jLabel3.setBounds(150, 20, 100, 32);
+        pwPassword.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pwPasswordActionPerformed(evt);
+            }
+        });
+        getContentPane().add(pwPassword);
+        pwPassword.setBounds(150, 120, 140, 22);
+
+        Title.setFont(new java.awt.Font("Dialog", 0, 24)); // NOI18N
+        Title.setText("Library");
+        getContentPane().add(Title);
+        Title.setBounds(150, 20, 100, 32);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
+        Users user=new Users();
+        UsersJpaController ujc = new UsersJpaController();
+        //Integer.getInteger(nm)
+        if("".equals(String.valueOf(txtUser.getText()))){
+            //System.out.println("vacio");
+        }
+        else{
+             user=ujc.findUsers(Integer.parseInt(txtUser.getText()));
+            //System.out.println(user.getPassword()); 
+            
+            if(user.getPassword().equals(String.valueOf(pwPassword.getPassword()))){
+                //System.out.println("bien");
+                (new MainWindow(user)).setVisible(true);
+                this.dispose();
+            }
+            else{
+                
+                
+            }
+            
+            //pwPassword.getPassword();
+            
+        }
+        
+        
+    }//GEN-LAST:event_btnLoginActionPerformed
 
-    private void jPasswordField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPasswordField1ActionPerformed
+    private void pwPasswordActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pwPasswordActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jPasswordField1ActionPerformed
+    }//GEN-LAST:event_pwPasswordActionPerformed
+
+    private void txtUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUserActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUserActionPerformed
 
     /**
      * @param args the command line arguments
@@ -118,11 +172,11 @@ public class Login extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JPasswordField jPasswordField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JLabel Title;
+    private javax.swing.JButton btnLogin;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblUser;
+    private javax.swing.JPasswordField pwPassword;
+    private javax.swing.JTextField txtUser;
     // End of variables declaration//GEN-END:variables
 }

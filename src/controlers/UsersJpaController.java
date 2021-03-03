@@ -6,6 +6,7 @@
 package controlers;
 
 import controlers.exceptions.NonexistentEntityException;
+import controlers.exceptions.PreexistingEntityException;
 import entities.Users;
 import java.io.Serializable;
 import java.util.List;
@@ -13,6 +14,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
+import javax.persistence.Persistence;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
@@ -25,19 +27,27 @@ public class UsersJpaController implements Serializable {
     public UsersJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
-    private EntityManagerFactory emf = null;
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("myLibraryPU");
+
+    public UsersJpaController() {
+    }
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
-    public void create(Users users) {
+    public void create(Users users) throws PreexistingEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
             em.persist(users);
             em.getTransaction().commit();
+        } catch (Exception ex) {
+            if (findUsers(users.getId()) != null) {
+                throw new PreexistingEntityException("Users " + users + " already exists.", ex);
+            }
+            throw ex;
         } finally {
             if (em != null) {
                 em.close();
