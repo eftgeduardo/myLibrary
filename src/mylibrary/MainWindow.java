@@ -41,6 +41,9 @@ public class MainWindow extends javax.swing.JFrame {
             tabbedPane.remove(0);
         }
         tabbedPane.addTab("Edit Borrow",(new panelPrueba()));
+        btnAdd.setEnabled(true);
+        btnDelete.setEnabled(false);
+        btnModify.setEnabled(false);
         
         
     }
@@ -116,6 +119,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jProgressBar1 = new javax.swing.JProgressBar();
+        jButton1 = new javax.swing.JButton();
         tabbedPane = new javax.swing.JTabbedPane();
         booksPane = new javax.swing.JPanel();
         lblLibrary = new javax.swing.JLabel();
@@ -143,11 +147,14 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblBooksSearch = new javax.swing.JTable();
         txtSearch = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setMinimumSize(new java.awt.Dimension(840, 500));
         getContentPane().setLayout(null);
+
+        jButton1.setText("Log out");
+        getContentPane().add(jButton1);
+        jButton1.setBounds(740, 0, 80, 24);
 
         booksPane.setMinimumSize(new java.awt.Dimension(440, 840));
         booksPane.setPreferredSize(new java.awt.Dimension(440, 840));
@@ -185,8 +192,15 @@ public class MainWindow extends javax.swing.JFrame {
         btnExit.setBounds(736, 256, 60, 24);
 
         btnModify.setText("modify");
+        btnModify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModifyActionPerformed(evt);
+            }
+        });
         booksPane.add(btnModify);
         btnModify.setBounds(656, 256, 70, 24);
+
+        txtId.setFocusable(false);
         booksPane.add(txtId);
         txtId.setBounds(586, 56, 60, 24);
         booksPane.add(txtTitle);
@@ -301,10 +315,6 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().add(tabbedPane);
         tabbedPane.setBounds(0, 0, 840, 500);
 
-        jButton1.setText("Log out");
-        getContentPane().add(jButton1);
-        jButton1.setBounds(740, 0, 80, 24);
-
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
@@ -349,7 +359,17 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        // TODO add your handling code here:
+        btnAdd.setEnabled(true);
+        btnDelete.setEnabled(false);
+        btnModify.setEnabled(false);
+        btnExit.setEnabled(false);
+        txtId.setText("");
+        txtTitle.setText("");
+        txtEditorial.setText("");
+        txtAuthor.setText("");
+        txtExistences.setText("");
+        txtShelve.setText("");
+        
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void tblBooksMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBooksMouseClicked
@@ -360,6 +380,11 @@ public class MainWindow extends javax.swing.JFrame {
         txtAuthor.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 3)));
         txtExistences.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 4)));
         txtShelve.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 5)));
+        
+        btnAdd.setEnabled(false);
+        btnDelete.setEnabled(true);
+        btnModify.setEnabled(true);
+        
     }//GEN-LAST:event_tblBooksMouseClicked
 
     private void btnBorrowBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrowBookActionPerformed
@@ -388,6 +413,29 @@ public class MainWindow extends javax.swing.JFrame {
         loadSearchTable();
         borrowedId=-1;//set not selected borrowed id       
     }//GEN-LAST:event_btnSearchActionPerformed
+
+    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
+        
+        //cambiar despues
+        int id= Integer.parseInt(txtId.getText());
+        Books books = new Books();
+        books.setId(id);
+        books.setAuthor(txtAuthor.getText());
+        books.setEditorial(txtEditorial.getText());
+        books.setExistences(Integer.parseInt(txtExistences.getText()));
+        //books.setId(WIDTH);
+        books.setShelve(txtShelve.getText());
+        books.setTitle(txtTitle.getText());
+        BooksJpaController bjc =new BooksJpaController();
+        try {
+            bjc.edit(books);
+        } catch (Exception ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        loadTable();
+        
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnModifyActionPerformed
 
     
     

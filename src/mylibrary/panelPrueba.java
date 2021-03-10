@@ -42,7 +42,6 @@ public class panelPrueba extends javax.swing.JPanel {
         lblExistences = new javax.swing.JLabel();
         jScrollPane = new javax.swing.JScrollPane();
         tblBooks = new javax.swing.JTable();
-        jLabel5 = new javax.swing.JLabel();
         jDateChooser2 = new com.toedter.calendar.JDateChooser();
         jDateChooser1 = new com.toedter.calendar.JDateChooser();
 
@@ -80,6 +79,11 @@ public class panelPrueba extends javax.swing.JPanel {
         btnExit.setBounds(740, 220, 60, 24);
 
         btnModify.setText("modify");
+        btnModify.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnModifyActionPerformed(evt);
+            }
+        });
         add(btnModify);
         btnModify.setBounds(660, 220, 70, 24);
         add(txtId);
@@ -93,21 +97,21 @@ public class panelPrueba extends javax.swing.JPanel {
         add(lblId);
         lblId.setBounds(516, 56, 12, 16);
 
-        lblTitle.setText("idBook");
+        lblTitle.setText("ID Book");
         add(lblTitle);
         lblTitle.setBounds(516, 86, 60, 16);
 
-        lblEditorial.setText("idUsers");
+        lblEditorial.setText("ID Users");
         add(lblEditorial);
-        lblEditorial.setBounds(516, 116, 44, 16);
+        lblEditorial.setBounds(516, 116, 60, 16);
 
         lblAuthor.setText("date");
         add(lblAuthor);
         lblAuthor.setBounds(516, 146, 24, 16);
 
-        lblExistences.setText("DueDate");
+        lblExistences.setText("Due Date");
         add(lblExistences);
-        lblExistences.setBounds(516, 176, 49, 16);
+        lblExistences.setBounds(516, 176, 60, 16);
 
         tblBooks.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -129,10 +133,6 @@ public class panelPrueba extends javax.swing.JPanel {
 
         add(jScrollPane);
         jScrollPane.setBounds(6, 36, 500, 307);
-
-        jLabel5.setText("jLabel5");
-        add(jLabel5);
-        jLabel5.setBounds(670, 410, 41, 16);
         add(jDateChooser2);
         jDateChooser2.setBounds(590, 180, 210, 24);
         add(jDateChooser1);
@@ -193,6 +193,10 @@ public class panelPrueba extends javax.swing.JPanel {
 //        txtShelve.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 5)));
     }//GEN-LAST:event_tblBooksMouseClicked
 
+    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnModifyActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
@@ -201,7 +205,6 @@ public class panelPrueba extends javax.swing.JPanel {
     private javax.swing.JButton btnModify;
     private com.toedter.calendar.JDateChooser jDateChooser1;
     private com.toedter.calendar.JDateChooser jDateChooser2;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JLabel lblAuthor;
     private javax.swing.JLabel lblEditorial;

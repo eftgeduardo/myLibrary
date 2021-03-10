@@ -71,6 +71,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="modify"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnModifyActionPerformed"/>
+      </Events>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
           <AbsoluteConstraints x="660" y="220" width="70" height="-1"/>
@@ -110,7 +113,7 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblTitle">
       <Properties>
-        <Property name="text" type="java.lang.String" value="idBook"/>
+        <Property name="text" type="java.lang.String" value="ID Book"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
@@ -120,11 +123,11 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblEditorial">
       <Properties>
-        <Property name="text" type="java.lang.String" value="idUsers"/>
+        <Property name="text" type="java.lang.String" value="ID Users"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="516" y="116" width="-1" height="-1"/>
+          <AbsoluteConstraints x="516" y="116" width="60" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -140,11 +143,11 @@
     </Component>
     <Component class="javax.swing.JLabel" name="lblExistences">
       <Properties>
-        <Property name="text" type="java.lang.String" value="DueDate"/>
+        <Property name="text" type="java.lang.String" value="Due Date"/>
       </Properties>
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="516" y="176" width="-1" height="-1"/>
+          <AbsoluteConstraints x="516" y="176" width="60" height="-1"/>
         </Constraint>
       </Constraints>
     </Component>
@@ -180,16 +183,6 @@
         </Component>
       </SubComponents>
     </Container>
-    <Component class="javax.swing.JLabel" name="jLabel5">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="jLabel5"/>
-      </Properties>
-      <Constraints>
-        <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
-          <AbsoluteConstraints x="670" y="410" width="-1" height="-1"/>
-        </Constraint>
-      </Constraints>
-    </Component>
     <Component class="com.toedter.calendar.JDateChooser" name="jDateChooser2">
       <Constraints>
         <Constraint layoutClass="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout" value="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout$AbsoluteConstraintsDescription">
