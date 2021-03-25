@@ -3,10 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controlers;
+package controller;
 
-import controlers.exceptions.NonexistentEntityException;
-import controlers.exceptions.PreexistingEntityException;
+import controller.exceptions.NonexistentEntityException;
 import java.io.Serializable;
 import javax.persistence.Query;
 import javax.persistence.EntityNotFoundException;
@@ -14,6 +13,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import entities.Books;
 import entities.Borrowed;
+import entities.Users;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -28,16 +28,17 @@ public class BorrowedJpaController implements Serializable {
     public BorrowedJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("myLibraryPU");
 
     public BorrowedJpaController() {
     }
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("myLibraryPU");
+    
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
-    public void create(Borrowed borrowed) throws PreexistingEntityException, Exception {
+    public void create(Borrowed borrowed) {
         EntityManager em = null;
         try {
             em = getEntityManager();
@@ -47,17 +48,21 @@ public class BorrowedJpaController implements Serializable {
                 idBooks = em.getReference(idBooks.getClass(), idBooks.getId());
                 borrowed.setIdBooks(idBooks);
             }
+            Users idUsers = borrowed.getIdUsers();
+            if (idUsers != null) {
+                idUsers = em.getReference(idUsers.getClass(), idUsers.getId());
+                borrowed.setIdUsers(idUsers);
+            }
             em.persist(borrowed);
             if (idBooks != null) {
                 idBooks.getBorrowedCollection().add(borrowed);
                 idBooks = em.merge(idBooks);
             }
-            em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findBorrowed(borrowed.getId()) != null) {
-                throw new PreexistingEntityException("Borrowed " + borrowed + " already exists.", ex);
+            if (idUsers != null) {
+                idUsers.getBorrowedCollection().add(borrowed);
+                idUsers = em.merge(idUsers);
             }
-            throw ex;
+            em.getTransaction().commit();
         } finally {
             if (em != null) {
                 em.close();
@@ -73,9 +78,15 @@ public class BorrowedJpaController implements Serializable {
             Borrowed persistentBorrowed = em.find(Borrowed.class, borrowed.getId());
             Books idBooksOld = persistentBorrowed.getIdBooks();
             Books idBooksNew = borrowed.getIdBooks();
+            Users idUsersOld = persistentBorrowed.getIdUsers();
+            Users idUsersNew = borrowed.getIdUsers();
             if (idBooksNew != null) {
                 idBooksNew = em.getReference(idBooksNew.getClass(), idBooksNew.getId());
                 borrowed.setIdBooks(idBooksNew);
+            }
+            if (idUsersNew != null) {
+                idUsersNew = em.getReference(idUsersNew.getClass(), idUsersNew.getId());
+                borrowed.setIdUsers(idUsersNew);
             }
             borrowed = em.merge(borrowed);
             if (idBooksOld != null && !idBooksOld.equals(idBooksNew)) {
@@ -85,6 +96,14 @@ public class BorrowedJpaController implements Serializable {
             if (idBooksNew != null && !idBooksNew.equals(idBooksOld)) {
                 idBooksNew.getBorrowedCollection().add(borrowed);
                 idBooksNew = em.merge(idBooksNew);
+            }
+            if (idUsersOld != null && !idUsersOld.equals(idUsersNew)) {
+                idUsersOld.getBorrowedCollection().remove(borrowed);
+                idUsersOld = em.merge(idUsersOld);
+            }
+            if (idUsersNew != null && !idUsersNew.equals(idUsersOld)) {
+                idUsersNew.getBorrowedCollection().add(borrowed);
+                idUsersNew = em.merge(idUsersNew);
             }
             em.getTransaction().commit();
         } catch (Exception ex) {
@@ -119,6 +138,11 @@ public class BorrowedJpaController implements Serializable {
             if (idBooks != null) {
                 idBooks.getBorrowedCollection().remove(borrowed);
                 idBooks = em.merge(idBooks);
+            }
+            Users idUsers = borrowed.getIdUsers();
+            if (idUsers != null) {
+                idUsers.getBorrowedCollection().remove(borrowed);
+                idUsers = em.merge(idUsers);
             }
             em.remove(borrowed);
             em.getTransaction().commit();

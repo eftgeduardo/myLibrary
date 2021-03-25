@@ -6,12 +6,15 @@
 package entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -28,6 +31,9 @@ import javax.persistence.Table;
     @NamedQuery(name = "Users.findByPassword", query = "SELECT u FROM Users u WHERE u.password = :password"),
     @NamedQuery(name = "Users.findByUserType", query = "SELECT u FROM Users u WHERE u.userType = :userType")})
 public class Users implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idUsers")
+    private Collection<Borrowed> borrowedCollection;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -125,6 +131,14 @@ public class Users implements Serializable {
     @Override
     public String toString() {
         return "entities.Users[ id=" + id + " ]";
+    }
+
+    public Collection<Borrowed> getBorrowedCollection() {
+        return borrowedCollection;
+    }
+
+    public void setBorrowedCollection(Collection<Borrowed> borrowedCollection) {
+        this.borrowedCollection = borrowedCollection;
     }
     
 }

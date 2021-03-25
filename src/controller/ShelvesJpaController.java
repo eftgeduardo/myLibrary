@@ -3,11 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controlers;
+package controller;
 
-import controlers.exceptions.NonexistentEntityException;
-import controlers.exceptions.PreexistingEntityException;
-import entities.Users;
+import controller.exceptions.NonexistentEntityException;
+import entities.Shelves;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.EntityManager;
@@ -22,32 +21,27 @@ import javax.persistence.criteria.Root;
  *
  * @author Ricardo
  */
-public class UsersJpaController implements Serializable {
+public class ShelvesJpaController implements Serializable {
 
-    public UsersJpaController(EntityManagerFactory emf) {
+    public ShelvesJpaController(EntityManagerFactory emf) {
         this.emf = emf;
     }
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("myLibraryPU");
 
-    public UsersJpaController() {
+    public ShelvesJpaController() {
     }
+    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("myLibraryPU");
 
     public EntityManager getEntityManager() {
         return emf.createEntityManager();
     }
 
-    public void create(Users users) throws PreexistingEntityException, Exception {
+    public void create(Shelves shelves) {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            em.persist(users);
+            em.persist(shelves);
             em.getTransaction().commit();
-        } catch (Exception ex) {
-            if (findUsers(users.getId()) != null) {
-                throw new PreexistingEntityException("Users " + users + " already exists.", ex);
-            }
-            throw ex;
         } finally {
             if (em != null) {
                 em.close();
@@ -55,19 +49,19 @@ public class UsersJpaController implements Serializable {
         }
     }
 
-    public void edit(Users users) throws NonexistentEntityException, Exception {
+    public void edit(Shelves shelves) throws NonexistentEntityException, Exception {
         EntityManager em = null;
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            users = em.merge(users);
+            shelves = em.merge(shelves);
             em.getTransaction().commit();
         } catch (Exception ex) {
             String msg = ex.getLocalizedMessage();
             if (msg == null || msg.length() == 0) {
-                Integer id = users.getId();
-                if (findUsers(id) == null) {
-                    throw new NonexistentEntityException("The users with id " + id + " no longer exists.");
+                Integer id = shelves.getId();
+                if (findShelves(id) == null) {
+                    throw new NonexistentEntityException("The shelves with id " + id + " no longer exists.");
                 }
             }
             throw ex;
@@ -83,14 +77,14 @@ public class UsersJpaController implements Serializable {
         try {
             em = getEntityManager();
             em.getTransaction().begin();
-            Users users;
+            Shelves shelves;
             try {
-                users = em.getReference(Users.class, id);
-                users.getId();
+                shelves = em.getReference(Shelves.class, id);
+                shelves.getId();
             } catch (EntityNotFoundException enfe) {
-                throw new NonexistentEntityException("The users with id " + id + " no longer exists.", enfe);
+                throw new NonexistentEntityException("The shelves with id " + id + " no longer exists.", enfe);
             }
-            em.remove(users);
+            em.remove(shelves);
             em.getTransaction().commit();
         } finally {
             if (em != null) {
@@ -99,19 +93,19 @@ public class UsersJpaController implements Serializable {
         }
     }
 
-    public List<Users> findUsersEntities() {
-        return findUsersEntities(true, -1, -1);
+    public List<Shelves> findShelvesEntities() {
+        return findShelvesEntities(true, -1, -1);
     }
 
-    public List<Users> findUsersEntities(int maxResults, int firstResult) {
-        return findUsersEntities(false, maxResults, firstResult);
+    public List<Shelves> findShelvesEntities(int maxResults, int firstResult) {
+        return findShelvesEntities(false, maxResults, firstResult);
     }
 
-    private List<Users> findUsersEntities(boolean all, int maxResults, int firstResult) {
+    private List<Shelves> findShelvesEntities(boolean all, int maxResults, int firstResult) {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            cq.select(cq.from(Users.class));
+            cq.select(cq.from(Shelves.class));
             Query q = em.createQuery(cq);
             if (!all) {
                 q.setMaxResults(maxResults);
@@ -123,20 +117,20 @@ public class UsersJpaController implements Serializable {
         }
     }
 
-    public Users findUsers(Integer id) {
+    public Shelves findShelves(Integer id) {
         EntityManager em = getEntityManager();
         try {
-            return em.find(Users.class, id);
+            return em.find(Shelves.class, id);
         } finally {
             em.close();
         }
     }
 
-    public int getUsersCount() {
+    public int getShelvesCount() {
         EntityManager em = getEntityManager();
         try {
             CriteriaQuery cq = em.getCriteriaBuilder().createQuery();
-            Root<Users> rt = cq.from(Users.class);
+            Root<Shelves> rt = cq.from(Shelves.class);
             cq.select(em.getCriteriaBuilder().count(rt));
             Query q = em.createQuery(cq);
             return ((Long) q.getSingleResult()).intValue();

@@ -5,6 +5,9 @@
     <class>entities.Books</class>
     <class>entities.Users</class>
     <class>entities.Borrowed</class>
+    <class>entities.Shelves</class>
+    <class>entities.Fines</class>
+    <class>entities.Author</class>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/bdlibrary?zeroDateTimeBehavior=CONVERT_TO_NULL"/>
       <property name="javax.persistence.jdbc.user" value="root"/>

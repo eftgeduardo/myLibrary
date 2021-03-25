@@ -5,7 +5,7 @@
  */
 package mylibrary;
 
-import controlers.UsersJpaController;
+import controller.UsersJpaController;
 import entities.Users;
 
 

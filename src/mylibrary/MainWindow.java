@@ -5,8 +5,13 @@
  */
 package mylibrary;
 
-import controlers.BooksJpaController;
-import controlers.exceptions.NonexistentEntityException;
+import CRUD.CrudAuthor;
+import CRUD.CrudBooks;
+import CRUD.CrudShelves;
+import CRUD.CrudUsers;
+import CRUD.WindowBorrowed;
+import CRUD.WindowFines;
+
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,52 +39,22 @@ public class MainWindow extends javax.swing.JFrame {
         logInUser=user;
         initComponents();
         this.setResizable(false);
-        loadTable();
         loadSearchTable();
         
         if(!admin){
             tabbedPane.remove(0);
         }
-        tabbedPane.addTab("Edit Borrow",(new panelPrueba()));
-        btnAdd.setEnabled(true);
-        btnDelete.setEnabled(false);
-        btnModify.setEnabled(false);
+        tabbedPane.addTab("Edit Borrow",(new WindowBorrowed()));
+        tabbedPane.addTab("Edit Fines",(new WindowFines()));
+        tabbedPane.addTab("Edit Author",(new CrudAuthor()));
+        tabbedPane.addTab("Edit Books",(new CrudBooks()));
+        tabbedPane.addTab("Edit Shelves",(new CrudShelves()));
+        tabbedPane.addTab("Edit Users",(new CrudUsers()));
         
         
     }
-    private void loadTable(){
-        DefaultTableModel model= new DefaultTableModel();
-        //`id`, `title`, `editorial`, `author`, `existences`, `shelve`
-        model.addColumn("id");
-        model.addColumn("title");
-        model.addColumn("editorial");
-        model.addColumn("author");
-        model.addColumn("existences");
-        model.addColumn("shelve");
-        
-        
-        
-        List<Books> listBooks = new ArrayList<Books>();
-        BooksJpaController bjc =new BooksJpaController();
-        listBooks = bjc.findBooksEntities();
-
-
-        String data[]=new String[6];
-        for (Books b: listBooks){
-            data[0]= String.valueOf(b.getId());
-            data[1]= b.getTitle();
-            data[2]= b.getEditorial();
-            data[3]= b.getAuthor();
-            data[4]= String.valueOf(b.getExistences());
-            data[5]= b.getShelve();
-            model.addRow(data);
-        }
-        tblBooks.setModel(model);
-        //tblBooks.add
-        //tblBooks.getSelectedRow()*/
-}
     private void loadSearchTable(){
-        DefaultTableModel model= new DefaultTableModel();
+        /*DefaultTableModel model= new DefaultTableModel();
         //`id`, `title`, `editorial`, `author`, `existences`, `shelve`
         model.addColumn("id");
         model.addColumn("title");
@@ -90,7 +65,7 @@ public class MainWindow extends javax.swing.JFrame {
         List<Books> listBooks = new ArrayList<Books>();
         BooksJpaController bjc =new BooksJpaController();
         listBooks = bjc.findBooksEntities();
-
+        
 
         String data[]=new String[6];
         for (Books b: listBooks){
@@ -106,7 +81,7 @@ public class MainWindow extends javax.swing.JFrame {
             model.addRow(data);}
         }
         tblBooksSearch.setModel(model); 
-    
+    */
     }
 
     /**
@@ -119,28 +94,8 @@ public class MainWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         jProgressBar1 = new javax.swing.JProgressBar();
-        jButton1 = new javax.swing.JButton();
+        btnLogOut = new javax.swing.JButton();
         tabbedPane = new javax.swing.JTabbedPane();
-        booksPane = new javax.swing.JPanel();
-        lblLibrary = new javax.swing.JLabel();
-        btnAdd = new javax.swing.JButton();
-        btnDelete = new javax.swing.JButton();
-        btnExit = new javax.swing.JButton();
-        btnModify = new javax.swing.JButton();
-        txtId = new javax.swing.JTextField();
-        txtTitle = new javax.swing.JTextField();
-        txtEditorial = new javax.swing.JTextField();
-        txtAuthor = new javax.swing.JTextField();
-        txtExistences = new javax.swing.JTextField();
-        txtShelve = new javax.swing.JTextField();
-        lblId = new javax.swing.JLabel();
-        lblTitle = new javax.swing.JLabel();
-        lblEditorial = new javax.swing.JLabel();
-        lblAuthor = new javax.swing.JLabel();
-        lblExistences = new javax.swing.JLabel();
-        lblShelve = new javax.swing.JLabel();
-        jScrollPane = new javax.swing.JScrollPane();
-        tblBooks = new javax.swing.JTable();
         searchPane = new javax.swing.JPanel();
         btnSearch = new javax.swing.JButton();
         btnBorrowBook = new javax.swing.JButton();
@@ -152,114 +107,14 @@ public class MainWindow extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(840, 500));
         getContentPane().setLayout(null);
 
-        jButton1.setText("Log out");
-        getContentPane().add(jButton1);
-        jButton1.setBounds(740, 0, 80, 24);
-
-        booksPane.setMinimumSize(new java.awt.Dimension(440, 840));
-        booksPane.setPreferredSize(new java.awt.Dimension(440, 840));
-        booksPane.setLayout(null);
-
-        lblLibrary.setText("Library");
-        booksPane.add(lblLibrary);
-        lblLibrary.setBounds(226, 6, 37, 16);
-
-        btnAdd.setText("add");
-        btnAdd.addActionListener(new java.awt.event.ActionListener() {
+        btnLogOut.setText("Log out");
+        btnLogOut.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAddActionPerformed(evt);
+                btnLogOutActionPerformed(evt);
             }
         });
-        booksPane.add(btnAdd);
-        btnAdd.setBounds(516, 256, 50, 24);
-
-        btnDelete.setText("delete");
-        btnDelete.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnDeleteActionPerformed(evt);
-            }
-        });
-        booksPane.add(btnDelete);
-        btnDelete.setBounds(576, 256, 70, 24);
-
-        btnExit.setText("exit");
-        btnExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExitActionPerformed(evt);
-            }
-        });
-        booksPane.add(btnExit);
-        btnExit.setBounds(736, 256, 60, 24);
-
-        btnModify.setText("modify");
-        btnModify.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnModifyActionPerformed(evt);
-            }
-        });
-        booksPane.add(btnModify);
-        btnModify.setBounds(656, 256, 70, 24);
-
-        txtId.setFocusable(false);
-        booksPane.add(txtId);
-        txtId.setBounds(586, 56, 60, 24);
-        booksPane.add(txtTitle);
-        txtTitle.setBounds(586, 86, 220, 24);
-        booksPane.add(txtEditorial);
-        txtEditorial.setBounds(586, 116, 220, 24);
-        booksPane.add(txtAuthor);
-        txtAuthor.setBounds(586, 146, 220, 24);
-        booksPane.add(txtExistences);
-        txtExistences.setBounds(586, 176, 220, 24);
-        booksPane.add(txtShelve);
-        txtShelve.setBounds(586, 206, 220, 24);
-
-        lblId.setText("ID");
-        booksPane.add(lblId);
-        lblId.setBounds(516, 56, 12, 16);
-
-        lblTitle.setText("Title");
-        booksPane.add(lblTitle);
-        lblTitle.setBounds(516, 86, 23, 16);
-
-        lblEditorial.setText("Editorial");
-        booksPane.add(lblEditorial);
-        lblEditorial.setBounds(516, 116, 45, 16);
-
-        lblAuthor.setText("Author");
-        booksPane.add(lblAuthor);
-        lblAuthor.setBounds(516, 146, 35, 16);
-
-        lblExistences.setText("Existences");
-        booksPane.add(lblExistences);
-        lblExistences.setBounds(516, 176, 60, 16);
-
-        lblShelve.setText("Shelve");
-        booksPane.add(lblShelve);
-        lblShelve.setBounds(516, 206, 37, 16);
-
-        tblBooks.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-
-            },
-            new String [] {
-
-            }
-        ));
-        tblBooks.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        tblBooks.setDoubleBuffered(true);
-        tblBooks.setVerifyInputWhenFocusTarget(false);
-        tblBooks.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblBooksMouseClicked(evt);
-            }
-        });
-        jScrollPane.setViewportView(tblBooks);
-
-        booksPane.add(jScrollPane);
-        jScrollPane.setBounds(6, 36, 500, 307);
-
-        tabbedPane.addTab("Books", booksPane);
+        getContentPane().add(btnLogOut);
+        btnLogOut.setBounds(740, 0, 80, 24);
 
         searchPane.setLayout(null);
 
@@ -318,75 +173,6 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        Books books = new Books();
-        books.setAuthor(txtAuthor.getText());
-        books.setEditorial(txtEditorial.getText());
-        books.setExistences(Integer.parseInt(txtExistences.getText()));
-        //books.setId(WIDTH);
-        books.setShelve(txtShelve.getText());
-        books.setTitle(txtTitle.getText());
-        BooksJpaController bjc =new BooksJpaController();
-        bjc.create(books);
-        loadTable();
-        /*Book book = new Book(Integer.parseInt(txtId.getText()), txtTitle.getText(),
-            txtEditorial.getText(), txtAuthor.getText(),
-            Integer.parseInt(txtExistences.getText()), txtShelve.getText());
-
-        //System.out.print(book.toString());
-        if(book.add()){
-            JOptionPane.showMessageDialog(null,"Succesfully added");
-        }
-        else{
-            JOptionPane.showMessageDialog(null,"Problem");
-        }*/
-
-        //txtAuthor.getText();        // TODO add your handling code here:
-    }//GEN-LAST:event_btnAddActionPerformed
-
-    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        try {
-            Books books = new Books();
-            BooksJpaController bjc =new BooksJpaController();
-            System.out.println("entero = "+Integer.parseInt(txtId.getText()));
-            bjc.destroy(Integer.parseInt(txtId.getText()));
-            loadTable();
-
-            // TODO add your handling code here:
-        } catch (NonexistentEntityException ex) {
-            Logger.getLogger(Visual.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_btnDeleteActionPerformed
-
-    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        btnAdd.setEnabled(true);
-        btnDelete.setEnabled(false);
-        btnModify.setEnabled(false);
-        btnExit.setEnabled(false);
-        txtId.setText("");
-        txtTitle.setText("");
-        txtEditorial.setText("");
-        txtAuthor.setText("");
-        txtExistences.setText("");
-        txtShelve.setText("");
-        
-    }//GEN-LAST:event_btnExitActionPerformed
-
-    private void tblBooksMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBooksMouseClicked
-
-        txtId.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 0)));
-        txtTitle.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 1)));
-        txtEditorial.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 2)));
-        txtAuthor.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 3)));
-        txtExistences.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 4)));
-        txtShelve.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 5)));
-        
-        btnAdd.setEnabled(false);
-        btnDelete.setEnabled(true);
-        btnModify.setEnabled(true);
-        
-    }//GEN-LAST:event_tblBooksMouseClicked
-
     private void btnBorrowBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrowBookActionPerformed
         // TODO add your handling code here:
         Date d =new Date();
@@ -395,14 +181,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBorrowBookActionPerformed
 
     private void tblBooksSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBooksSearchMouseClicked
-        borrowedId= Integer.parseInt(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 0)));
-        
-        //        txtId.setText()
-        //        txtTitle.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 1)));
-        //        txtEditorial.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 2)));
-        //        txtAuthor.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 3)));
-        //        txtExistences.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 4)));
-        //        txtShelve.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 5)));
+        borrowedId= Integer.parseInt(String.valueOf(tblBooksSearch.getValueAt(tblBooksSearch.getSelectedRow(), 0)));
     }//GEN-LAST:event_tblBooksSearchMouseClicked
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
@@ -414,28 +193,10 @@ public class MainWindow extends javax.swing.JFrame {
         borrowedId=-1;//set not selected borrowed id       
     }//GEN-LAST:event_btnSearchActionPerformed
 
-    private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        
-        //cambiar despues
-        int id= Integer.parseInt(txtId.getText());
-        Books books = new Books();
-        books.setId(id);
-        books.setAuthor(txtAuthor.getText());
-        books.setEditorial(txtEditorial.getText());
-        books.setExistences(Integer.parseInt(txtExistences.getText()));
-        //books.setId(WIDTH);
-        books.setShelve(txtShelve.getText());
-        books.setTitle(txtTitle.getText());
-        BooksJpaController bjc =new BooksJpaController();
-        try {
-            bjc.edit(books);
-        } catch (Exception ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        loadTable();
-        
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnModifyActionPerformed
+    private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
+        (new Login()).setVisible(true);
+        dispose();        
+    }//GEN-LAST:event_btnLogOutActionPerformed
 
     
     
@@ -486,34 +247,14 @@ public class MainWindow extends javax.swing.JFrame {
 //    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel booksPane;
-    private javax.swing.JButton btnAdd;
     private javax.swing.JButton btnBorrowBook;
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnExit;
-    private javax.swing.JButton btnModify;
+    private javax.swing.JButton btnLogOut;
     private javax.swing.JButton btnSearch;
-    private javax.swing.JButton jButton1;
     private javax.swing.JProgressBar jProgressBar1;
-    private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JLabel lblAuthor;
-    private javax.swing.JLabel lblEditorial;
-    private javax.swing.JLabel lblExistences;
-    private javax.swing.JLabel lblId;
-    private javax.swing.JLabel lblLibrary;
-    private javax.swing.JLabel lblShelve;
-    private javax.swing.JLabel lblTitle;
     private javax.swing.JPanel searchPane;
     private javax.swing.JTabbedPane tabbedPane;
-    private javax.swing.JTable tblBooks;
     private javax.swing.JTable tblBooksSearch;
-    private javax.swing.JTextField txtAuthor;
-    private javax.swing.JTextField txtEditorial;
-    private javax.swing.JTextField txtExistences;
-    private javax.swing.JTextField txtId;
     private javax.swing.JTextField txtSearch;
-    private javax.swing.JTextField txtShelve;
-    private javax.swing.JTextField txtTitle;
     // End of variables declaration//GEN-END:variables
 }
