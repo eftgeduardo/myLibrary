@@ -7,6 +7,8 @@ package CRUD;
 
 import controller.BooksJpaController;
 import controller.BorrowedJpaController;
+import controller.UsersJpaController;
+import controller.exceptions.IllegalOrphanException;
 import controller.exceptions.NonexistentEntityException;
 import entities.Books;
 import entities.Borrowed;
@@ -19,18 +21,19 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
-public class WindowFines extends javax.swing.JPanel {
+public class CrudBorrowed extends javax.swing.JPanel {
 
     /**
      * Creates new form panelPrueba
      */
-    public WindowFines() {
+    public CrudBorrowed() {
         initComponents();
         loadTable();
         btnAdd.setEnabled(true);
@@ -39,40 +42,40 @@ public class WindowFines extends javax.swing.JPanel {
         
     }
     private void loadTable(){
-//        DefaultTableModel model= new DefaultTableModel();
-//        model.addColumn("id");
-//        model.addColumn("IdUsers");
-//        model.addColumn("IdBooks");
-//        model.addColumn("Date");
-//        model.addColumn("DueDate");
-//        model.addColumn("getReturned");
-//        List<Borrowed> listBorrowed = new ArrayList<Borrowed>();
-//        BorrowedJpaController bjc =new BorrowedJpaController();
-//        listBorrowed = bjc.findBorrowedEntities();
-//
-//        Object data[] =new Object[6];
-//        
-//        //Load objects to table.
-//        for (Borrowed b:listBorrowed){
-//            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-//            data[0]=b.getId();
-//            data[1]=b.getIdUsers();
-//            data[2]=b.getIdBooks();
-//            data[3]=dateFormat.format(b.getDate());
-//            data[4]=dateFormat.format(b.getDueDate());
-//            data[5]=b.getReturned();
-//            model.addRow(data);
-//        }
-//        //load comboBox users
-//        for (Users u:(new UsersJpaController()).findUsersEntities()){
-//            cbIDUsers.addItem(u);
-//        }
-//        //load Combobox Books
-//        for (Books b:(new BooksJpaController()).findBooksEntities()){
-//            cbIDBooks.addItem(b);
-//        }
-//        tblBorrowed.setModel(model);
-//        
+        DefaultTableModel model= new DefaultTableModel();
+        model.addColumn("id");
+        model.addColumn("IdUsers");
+        model.addColumn("IdBooks");
+        model.addColumn("Date");
+        model.addColumn("DueDate");
+        model.addColumn("getReturned");
+        List<Borrowed> listBorrowed = new ArrayList<Borrowed>();
+        BorrowedJpaController bjc =new BorrowedJpaController();
+        listBorrowed = bjc.findBorrowedEntities();
+
+        Object data[] =new Object[6];
+        
+        //Load objects to table.
+        for (Borrowed b:listBorrowed){
+            DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            data[0]=b.getId();
+            data[1]=b.getIdUsers();
+            data[2]=b.getIdBooks();
+            data[3]=dateFormat.format(b.getDate());
+            data[4]=dateFormat.format(b.getDueDate());
+            data[5]=b.getReturned();
+            model.addRow(data);
+        }
+        //load comboBox users
+        for (Users u:(new UsersJpaController()).findUsersEntities()){
+            cbIDUsers.addItem(u);
+        }
+        //load Combobox Books
+        for (Books b:(new BooksJpaController()).findBooksEntities()){
+            cbIDBooks.addItem(b);
+        }
+        tblBorrowed.setModel(model);
+        
         
         
     
@@ -102,17 +105,17 @@ public class WindowFines extends javax.swing.JPanel {
         lblDueDate = new javax.swing.JLabel();
         jScrollPane = new javax.swing.JScrollPane();
         tblBorrowed = new javax.swing.JTable();
+        dChoserDate = new com.toedter.calendar.JDateChooser();
         ReturnedTrue = new javax.swing.JRadioButton();
         ReturnedFalse = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        cbIDUsers = new javax.swing.JComboBox<>();
+        cbIDBooks = new javax.swing.JComboBox<>();
+        dChoserDueDate = new com.toedter.calendar.JDateChooser();
 
         setLayout(null);
 
-        lblLibrary.setText("Edit Fines");
+        lblLibrary.setText("Edit Borrowed");
         add(lblLibrary);
         lblLibrary.setBounds(226, 6, 80, 16);
 
@@ -160,19 +163,19 @@ public class WindowFines extends javax.swing.JPanel {
         add(lblId);
         lblId.setBounds(516, 56, 12, 16);
 
-        lbIdBook.setText("ID Users");
+        lbIdBook.setText("ID Book");
         add(lbIdBook);
         lbIdBook.setBounds(516, 86, 60, 16);
 
-        lblIdUsers.setText("ID Borrowed");
+        lblIdUsers.setText("ID Users");
         add(lblIdUsers);
-        lblIdUsers.setBounds(516, 116, 68, 16);
+        lblIdUsers.setBounds(516, 116, 60, 16);
 
-        lblDate.setText("Fine Cost");
+        lblDate.setText("Date");
         add(lblDate);
-        lblDate.setBounds(516, 146, 70, 16);
+        lblDate.setBounds(516, 146, 50, 16);
 
-        lblDueDate.setText("Days Late");
+        lblDueDate.setText("Due Date");
         add(lblDueDate);
         lblDueDate.setBounds(516, 176, 60, 16);
 
@@ -197,6 +200,10 @@ public class WindowFines extends javax.swing.JPanel {
         add(jScrollPane);
         jScrollPane.setBounds(6, 36, 500, 307);
 
+        dChoserDate.setDateFormatString("dd/MM/yyyy");
+        add(dChoserDate);
+        dChoserDate.setBounds(586, 146, 210, 24);
+
         btnGroupReturned.add(ReturnedTrue);
         ReturnedTrue.setText("yes");
         ReturnedTrue.addActionListener(new java.awt.event.ActionListener() {
@@ -213,135 +220,138 @@ public class WindowFines extends javax.swing.JPanel {
         add(ReturnedFalse);
         ReturnedFalse.setBounds(600, 250, 46, 28);
 
-        jLabel1.setText("Paid");
+        jLabel1.setText("Returned");
         add(jLabel1);
         jLabel1.setBounds(520, 230, 70, 16);
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        cbIDUsers.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                cbIDUsersActionPerformed(evt);
             }
         });
-        add(jTextField1);
-        jTextField1.setBounds(586, 86, 210, 24);
+        add(cbIDUsers);
+        cbIDUsers.setBounds(586, 116, 210, 26);
 
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+        cbIDBooks.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
+                cbIDBooksActionPerformed(evt);
             }
         });
-        add(jTextField2);
-        jTextField2.setBounds(586, 116, 210, 24);
+        add(cbIDBooks);
+        cbIDBooks.setBounds(586, 86, 210, 26);
 
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
-            }
-        });
-        add(jTextField3);
-        jTextField3.setBounds(586, 146, 210, 24);
-
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
-            }
-        });
-        add(jTextField4);
-        jTextField4.setBounds(586, 176, 210, 24);
+        dChoserDueDate.setDateFormatString("dd/MM/yyyy");
+        add(dChoserDueDate);
+        dChoserDueDate.setBounds(586, 176, 210, 24);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-//        //Borrowed borrowed  = new Borrowed();
-//        Borrowed borrowed = new Borrowed();
-//        //borrowed.setId(Integer.parseInt(txtIdBooks.getText()));
-//        borrowed.setIdBooks((Books)cbIDBooks.getSelectedItem());
-//        borrowed.setIdUsers((Users) cbIDUsers.getSelectedItem());
-//        borrowed.setDate(dChoserDate.getDate());
-//        borrowed.setDueDate(dChoserDueDate.getDate());
-//        borrowed.setReturned(ReturnedTrue.isSelected());
-//        BorrowedJpaController bjc = new BorrowedJpaController();
-//        bjc.create(borrowed);
-//        loadTable();
+        //Borrowed borrowed  = new Borrowed();
+        Borrowed borrowed = new Borrowed();
+        //borrowed.setId(Integer.parseInt(txtIdBooks.getText()));
+        borrowed.setIdBooks((Books)cbIDBooks.getSelectedItem());
+        borrowed.setIdUsers((Users) cbIDUsers.getSelectedItem());
+        borrowed.setDate(dChoserDate.getDate());
+        borrowed.setDueDate(dChoserDueDate.getDate());
+        borrowed.setReturned(ReturnedTrue.isSelected());
+        BorrowedJpaController bjc = new BorrowedJpaController();
+        bjc.create(borrowed);
+        loadTable();
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-//        BorrowedJpaController bjc = new BorrowedJpaController();
-//        try {
-//            bjc.destroy(Integer.parseInt(txtId.getText()));
-//        } catch (NonexistentEntityException ex) {
-//            Logger.getLogger(WindowFines.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        
+        BorrowedJpaController bjc = new BorrowedJpaController();
+        try {
+            bjc.destroy(Integer.parseInt(txtId.getText()));
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(CrudBorrowed.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(this, "Error al borrar el usuario" );
+        }
+        loadTable();
+        btnAdd.setEnabled(true);
+        btnDelete.setEnabled(false);
+        btnModify.setEnabled(false);
+        
+        txtId.setText("");
+        cbIDBooks.setSelectedIndex(0);
+        cbIDUsers.setSelectedIndex(0);
+        dChoserDate.setDate(null);
+        dChoserDueDate.setDate(null);
+        ReturnedFalse.setSelected(true);
+        
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         btnAdd.setEnabled(true);
         btnDelete.setEnabled(false);
         btnModify.setEnabled(false);
+        
+        txtId.setText("");
+        cbIDBooks.setSelectedIndex(0);
+        cbIDUsers.setSelectedIndex(0);
+        
+        
+        dChoserDate.setDate(null);
+        dChoserDueDate.setDate(null);
+        ReturnedFalse.setSelected(true);
         //dChoserDueDate.cleanup();
         //btnExit.setEnabled(true);// TODO add your handling code here:
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void tblBorrowedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBorrowedMouseClicked
-//        System.out.println(tblBorrowed.getValueAt(0, 1).getClass());
-//        UsersJpaController ujc= new UsersJpaController();
-//        Users u= (Users) tblBorrowed.getValueAt(0, 1);
-//        txtId.setText(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),0)));
-//        cbIDUsers.getModel().setSelectedItem(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),1));
-//        cbIDBooks.getModel().setSelectedItem(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),2));
-//        
-//        try {
-//            dChoserDate.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),3))));
-//            dChoserDueDate.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),4))));
-//            
-//        } catch (ParseException ex) {
-//            Logger.getLogger(WindowFines.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        btnAdd.setEnabled(false);
-//        btnDelete.setEnabled(true);
-//        btnModify.setEnabled(true);
-//        btnExit.setEnabled(true);
+        System.out.println(tblBorrowed.getValueAt(0, 1).getClass());
+        UsersJpaController ujc= new UsersJpaController();
+        Users u= (Users) tblBorrowed.getValueAt(0, 1);
+        txtId.setText(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),0)));
+        cbIDUsers.getModel().setSelectedItem(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),1));
+        cbIDBooks.getModel().setSelectedItem(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),2));
+        
+        try {
+            dChoserDate.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),3))));
+            dChoserDueDate.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),4))));
+            
+        } catch (ParseException ex) {
+            Logger.getLogger(CrudBorrowed.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        ReturnedTrue.setSelected(Boolean.parseBoolean(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),5))));
+        ReturnedFalse.setSelected(!Boolean.parseBoolean(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),5))));
+        btnAdd.setEnabled(false);
+        btnDelete.setEnabled(true);
+        btnModify.setEnabled(true);
+        btnExit.setEnabled(true);
         
     }//GEN-LAST:event_tblBorrowedMouseClicked
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-//        Borrowed borrowed = new Borrowed();
-//        borrowed.setId(Integer.parseInt(txtId.getText()));
-//        borrowed.setIdBooks((Books)cbIDBooks.getSelectedItem());
-//        borrowed.setIdUsers((Users) cbIDUsers.getSelectedItem());
-//        borrowed.setDate(dChoserDate.getDate());
-//        borrowed.setDueDate(dChoserDueDate.getDate());
-//        borrowed.setReturned(ReturnedTrue.isSelected());
-//        BorrowedJpaController bjc = new BorrowedJpaController();
-//        
-//        try {
-//            bjc.edit(borrowed);
-//        } catch (Exception ex) {
-//            Logger.getLogger(WindowFines.class.getName()).log(Level.SEVERE, null, ex);
-//        }
-//        loadTable();
-//
+        Borrowed borrowed = new Borrowed();
+        borrowed.setId(Integer.parseInt(txtId.getText()));
+        borrowed.setIdBooks((Books)cbIDBooks.getSelectedItem());
+        borrowed.setIdUsers((Users) cbIDUsers.getSelectedItem());
+        borrowed.setDate(dChoserDate.getDate());
+        borrowed.setDueDate(dChoserDueDate.getDate());
+        borrowed.setReturned(ReturnedTrue.isSelected());
+        BorrowedJpaController bjc = new BorrowedJpaController();
+        
+        try {
+            bjc.edit(borrowed);
+        } catch (Exception ex) {
+            Logger.getLogger(CrudBorrowed.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        loadTable();
+
     }//GEN-LAST:event_btnModifyActionPerformed
 
     private void ReturnedTrueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnedTrueActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ReturnedTrueActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void cbIDUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbIDUsersActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_cbIDUsersActionPerformed
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void cbIDBooksActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbIDBooksActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
-
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
-
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+    }//GEN-LAST:event_cbIDBooksActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -352,12 +362,14 @@ public class WindowFines extends javax.swing.JPanel {
     private javax.swing.JButton btnExit;
     private javax.swing.ButtonGroup btnGroupReturned;
     private javax.swing.JButton btnModify;
+    private javax.swing.JComboBox<Object
+    > cbIDBooks;
+    private javax.swing.JComboBox<Object
+    > cbIDUsers;
+    private com.toedter.calendar.JDateChooser dChoserDate;
+    private com.toedter.calendar.JDateChooser dChoserDueDate;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     private javax.swing.JLabel lbIdBook;
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblDueDate;

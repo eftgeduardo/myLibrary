@@ -26,7 +26,7 @@ import javax.persistence.TemporalType;
 
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 @Entity
 @Table(name = "borrowed")
@@ -149,7 +149,7 @@ public class Borrowed implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Borrowed[ id=" + id + " ]";
+        return  id+"";
     }
 
     public Collection<Fines> getFinesCollection() {

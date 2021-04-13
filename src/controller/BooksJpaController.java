@@ -19,7 +19,7 @@ import javax.persistence.criteria.Root;
 
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 public class BooksJpaController implements Serializable {
 

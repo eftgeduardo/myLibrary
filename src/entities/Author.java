@@ -20,7 +20,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 @Entity
 @Table(name = "author")
@@ -119,7 +119,7 @@ public class Author implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Author[ id=" + id + " ]";
+        return firstName+ ", id:" + id;
     }
 
     public Collection<Books> getBooksCollection() {

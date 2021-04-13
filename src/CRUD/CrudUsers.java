@@ -5,9 +5,24 @@
  */
 package CRUD;
 
+import controller.BooksJpaController;
+import controller.BorrowedJpaController;
+import controller.UsersJpaController;
+import entities.Books;
+import entities.Borrowed;
+import entities.Users;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 public class CrudUsers extends javax.swing.JPanel {
 
@@ -16,6 +31,36 @@ public class CrudUsers extends javax.swing.JPanel {
      */
     public CrudUsers() {
         initComponents();
+        loadTable();
+        btnAdd.setEnabled(true);
+        btnDelete.setEnabled(false);
+        btnModify.setEnabled(false);
+    }
+    private void loadTable(){
+        DefaultTableModel model= new DefaultTableModel();
+        model.addColumn("id");
+        model.addColumn("firstName");
+        model.addColumn("lastName");
+        model.addColumn("Password");
+        model.addColumn("Admin");
+        List<Users> listUsers = new ArrayList<Users>();
+        UsersJpaController ujc =new UsersJpaController();
+        listUsers = ujc.findUsersEntities();
+        System.out.println(listUsers);
+        Object data[] =new Object[5];
+        
+        //Load objects to table.
+        for (Users u:listUsers){
+            
+            data[0]=u.getId();
+            data[1]=u.getFistName();
+            data[2]=u.getLastName();
+            data[3]=u.getPassword();
+            data[4]=u.getUserType();
+            model.addRow(data);
+        }
+        tblUsers.setModel(model);
+    
     }
 
     /**
@@ -38,13 +83,13 @@ public class CrudUsers extends javax.swing.JPanel {
         lblIdUsers = new javax.swing.JLabel();
         lblDate = new javax.swing.JLabel();
         jScrollPane = new javax.swing.JScrollPane();
-        tblBorrowed = new javax.swing.JTable();
+        tblUsers = new javax.swing.JTable();
         ReturnedTrue = new javax.swing.JRadioButton();
         ReturnedFalse = new javax.swing.JRadioButton();
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField3 = new javax.swing.JTextField();
+        txtLastName = new javax.swing.JTextField();
+        txtFirstName = new javax.swing.JTextField();
+        txtPassword = new javax.swing.JTextField();
 
         setLayout(null);
 
@@ -87,8 +132,6 @@ public class CrudUsers extends javax.swing.JPanel {
         });
         add(btnModify);
         btnModify.setBounds(670, 290, 70, 24);
-
-        txtId.setEditable(false);
         add(txtId);
         txtId.setBounds(586, 56, 60, 24);
 
@@ -96,19 +139,19 @@ public class CrudUsers extends javax.swing.JPanel {
         add(lblId);
         lblId.setBounds(516, 56, 12, 16);
 
-        lbIdBook.setText("firstName");
+        lbIdBook.setText("first Name");
         add(lbIdBook);
         lbIdBook.setBounds(516, 86, 60, 16);
 
-        lblIdUsers.setText("LastName");
+        lblIdUsers.setText("Last Name");
         add(lblIdUsers);
-        lblIdUsers.setBounds(516, 116, 60, 16);
+        lblIdUsers.setBounds(516, 116, 70, 16);
 
         lblDate.setText("Password");
         add(lblDate);
         lblDate.setBounds(516, 146, 70, 16);
 
-        tblBorrowed.setModel(new javax.swing.table.DefaultTableModel(
+        tblUsers.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -116,20 +159,20 @@ public class CrudUsers extends javax.swing.JPanel {
 
             }
         ));
-        tblBorrowed.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        tblBorrowed.setDoubleBuffered(true);
-        tblBorrowed.setVerifyInputWhenFocusTarget(false);
-        tblBorrowed.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblUsers.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tblUsers.setDoubleBuffered(true);
+        tblUsers.setVerifyInputWhenFocusTarget(false);
+        tblUsers.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblBorrowedMouseClicked(evt);
+                tblUsersMouseClicked(evt);
             }
         });
-        jScrollPane.setViewportView(tblBorrowed);
+        jScrollPane.setViewportView(tblUsers);
 
         add(jScrollPane);
         jScrollPane.setBounds(6, 36, 500, 307);
 
-        ReturnedTrue.setText("Admin");
+        ReturnedTrue.setText("True");
         ReturnedTrue.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 ReturnedTrueActionPerformed(evt);
@@ -139,94 +182,110 @@ public class CrudUsers extends javax.swing.JPanel {
         ReturnedTrue.setBounds(600, 220, 90, 28);
 
         ReturnedFalse.setSelected(true);
-        ReturnedFalse.setText("Not Admin");
+        ReturnedFalse.setText("False");
+        ReturnedFalse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReturnedFalseActionPerformed(evt);
+            }
+        });
         add(ReturnedFalse);
         ReturnedFalse.setBounds(600, 250, 110, 28);
 
-        jLabel1.setText("Returned");
+        jLabel1.setText("Admin");
         add(jLabel1);
         jLabel1.setBounds(520, 230, 70, 16);
-        add(jTextField1);
-        jTextField1.setBounds(586, 116, 210, 24);
-        add(jTextField2);
-        jTextField2.setBounds(586, 86, 210, 24);
-        add(jTextField3);
-        jTextField3.setBounds(586, 146, 210, 24);
+        add(txtLastName);
+        txtLastName.setBounds(586, 116, 210, 24);
+        add(txtFirstName);
+        txtFirstName.setBounds(586, 86, 210, 24);
+        add(txtPassword);
+        txtPassword.setBounds(586, 146, 210, 24);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        //        //Borrowed borrowed  = new Borrowed();
-        //        Borrowed borrowed = new Borrowed();
-        //        //borrowed.setId(Integer.parseInt(txtIdBooks.getText()));
-        //        borrowed.setIdBooks((Books)cbIDBooks.getSelectedItem());
-        //        borrowed.setIdUsers((CrudUsers) cbIDUsers.getSelectedItem());
-        //        borrowed.setDate(dChoserDate.getDate());
-        //        borrowed.setDueDate(dChoserDueDate.getDate());
-        //        borrowed.setReturned(ReturnedTrue.isSelected());
-        //        BorrowedJpaController bjc = new BorrowedJpaController();
-        //        bjc.create(borrowed);
-        //        loadTable();
+        Users user = new Users();
+        
+        user.setId(Integer.parseInt(txtId.getText()));
+        user.setFistName(txtFirstName.getText());
+        user.setLastName(txtLastName.getText());
+        user.setPassword(txtPassword.getText());
+        user.setUserType(ReturnedTrue.isSelected());
+        
+        UsersJpaController ujc = new UsersJpaController();
+        try {
+            ujc.create(user);
+        } catch (Exception ex) {
+            Logger.getLogger(CrudUsers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        loadTable();
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        //        BorrowedJpaController bjc = new BorrowedJpaController();
-        //        try {
-            //            bjc.destroy(Integer.parseInt(txtId.getText()));
-            //        } catch (NonexistentEntityException ex) {
-            //            Logger.getLogger(WindowBorrowed.class.getName()).log(Level.SEVERE, null, ex);
-            //        }
+        UsersJpaController ujc = new UsersJpaController();
+        try {
+            ujc.destroy(Integer.parseInt(txtId.getText()));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this,"This user has data in another table or has already been deleted" );
+            //Logger.getLogger(CrudUsers.class.getName()).log(Level.FINEST, null, ex);
+        }
+        loadTable(); 
+        txtFirstName.setText("");
+        txtId.setText("");
+        txtLastName.setText("");
+        txtPassword.setText("");
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        //        btnAdd.setEnabled(true);
-        //        btnDelete.setEnabled(false);
-        //        btnModify.setEnabled(false);
-        //        //dChoserDueDate.cleanup();
-        //        //btnExit.setEnabled(true);// TODO add your handling code here:
+        txtFirstName.setText("");
+        txtId.setText("");
+        txtLastName.setText("");
+        txtPassword.setText("");
+        ReturnedFalse.setSelected(true);
+        btnAdd.setEnabled(true);
+        btnDelete.setEnabled(false);
+        btnModify.setEnabled(false);
+        
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        //        Borrowed borrowed = new Borrowed();
-        //        borrowed.setId(Integer.parseInt(txtId.getText()));
-        //        borrowed.setIdBooks((Books)cbIDBooks.getSelectedItem());
-        //        borrowed.setIdUsers((CrudUsers) cbIDUsers.getSelectedItem());
-        //        borrowed.setDate(dChoserDate.getDate());
-        //        borrowed.setDueDate(dChoserDueDate.getDate());
-        //        borrowed.setReturned(ReturnedTrue.isSelected());
-        //        BorrowedJpaController bjc = new BorrowedJpaController();
-        //
-        //        try {
-            //            bjc.edit(borrowed);
-            //        } catch (Exception ex) {
-            //            Logger.getLogger(WindowBorrowed.class.getName()).log(Level.SEVERE, null, ex);
-            //        }
-        //        loadTable();
+        Users user = new Users();
+        
+        user.setId(Integer.parseInt(txtId.getText()));
+        user.setFistName(txtFirstName.getText());
+        user.setLastName(txtLastName.getText());
+        user.setPassword(txtPassword.getText());
+        user.setUserType(ReturnedTrue.isSelected());
+        //user.setBorrowedCollection();
+        
+        UsersJpaController ujc = new UsersJpaController();
+        try {
+            ujc.edit(user);
+        } catch (Exception ex) {
+            Logger.getLogger(CrudUsers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        loadTable();
     }//GEN-LAST:event_btnModifyActionPerformed
 
-    private void tblBorrowedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBorrowedMouseClicked
-        //        System.out.println(tblBorrowed.getValueAt(0, 1).getClass());
-        //        UsersJpaController ujc= new UsersJpaController();
-        //        CrudUsers u= (CrudUsers) tblBorrowed.getValueAt(0, 1);
-        //        txtId.setText(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),0)));
-        //        cbIDUsers.getModel().setSelectedItem(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),1));
-        //        cbIDBooks.getModel().setSelectedItem(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),2));
-        //
-        //        try {
-            //            dChoserDate.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),3))));
-            //            dChoserDueDate.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),4))));
-            //
-            //        } catch (ParseException ex) {
-            //            Logger.getLogger(WindowBorrowed.class.getName()).log(Level.SEVERE, null, ex);
-            //        }
-        //        btnAdd.setEnabled(false);
-        //        btnDelete.setEnabled(true);
-        //        btnModify.setEnabled(true);
-        //        btnExit.setEnabled(true);
-    }//GEN-LAST:event_tblBorrowedMouseClicked
+    private void tblUsersMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblUsersMouseClicked
+        txtId.setText(String.valueOf(tblUsers.getValueAt(tblUsers.getSelectedRow(),0)));
+        txtFirstName.setText(String.valueOf(tblUsers.getValueAt(tblUsers.getSelectedRow(),1)));
+        txtLastName.setText(String.valueOf(tblUsers.getValueAt(tblUsers.getSelectedRow(),2)));
+        txtPassword.setText(String.valueOf(tblUsers.getValueAt(tblUsers.getSelectedRow(),3)));
+        ReturnedTrue.setSelected(Boolean.parseBoolean(String.valueOf(tblUsers.getValueAt(tblUsers.getSelectedRow(),4))));
+        ReturnedFalse.setSelected(!Boolean.parseBoolean(String.valueOf(tblUsers.getValueAt(tblUsers.getSelectedRow(),4))));
+        btnAdd.setEnabled(false);
+        btnDelete.setEnabled(true);
+        btnModify.setEnabled(true);
+        btnExit.setEnabled(true);
+    }//GEN-LAST:event_tblUsersMouseClicked
 
     private void ReturnedTrueActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnedTrueActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ReturnedTrueActionPerformed
+
+    private void ReturnedFalseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReturnedFalseActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReturnedFalseActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -238,15 +297,15 @@ public class CrudUsers extends javax.swing.JPanel {
     private javax.swing.JButton btnModify;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     private javax.swing.JLabel lbIdBook;
     private javax.swing.JLabel lblDate;
     private javax.swing.JLabel lblId;
     private javax.swing.JLabel lblIdUsers;
     private javax.swing.JLabel lblLibrary;
-    private javax.swing.JTable tblBorrowed;
+    private javax.swing.JTable tblUsers;
+    private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtId;
+    private javax.swing.JTextField txtLastName;
+    private javax.swing.JTextField txtPassword;
     // End of variables declaration//GEN-END:variables
 }

@@ -20,7 +20,7 @@ import javax.persistence.Persistence;
 
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 public class FinesJpaController implements Serializable {
 

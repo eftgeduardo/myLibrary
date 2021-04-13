@@ -21,7 +21,7 @@ import javax.persistence.Persistence;
 
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 public class BorrowedJpaController implements Serializable {
 

@@ -5,9 +5,20 @@
  */
 package CRUD;
 
+import controller.ShelvesJpaController;
+import controller.UsersJpaController;
+import controller.exceptions.NonexistentEntityException;
+import entities.Shelves;
+import entities.Users;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 public class CrudShelves extends javax.swing.JPanel {
 
@@ -16,6 +27,34 @@ public class CrudShelves extends javax.swing.JPanel {
      */
     public CrudShelves() {
         initComponents();
+        loadTable();
+        btnAdd.setEnabled(true);
+        btnDelete.setEnabled(false);
+        btnModify.setEnabled(false);
+    }
+    private void loadTable(){
+        DefaultTableModel model= new DefaultTableModel();
+        model.addColumn("id");
+        model.addColumn("Name");
+        model.addColumn("Categoriese");
+        
+        List<Shelves> listShelves = new ArrayList<Shelves>();
+        ShelvesJpaController ujc =new ShelvesJpaController();
+        listShelves = ujc.findShelvesEntities();
+        System.out.println(listShelves);
+        Object data[] =new Object[3];
+        
+        //Load objects to table.
+        for (Shelves s:listShelves){
+            
+            data[0]=s.getId();
+            data[1]=s.getName();
+            data[2]=s.getCategories();
+            model.addRow(data);
+            
+        }
+        tblShelves.setModel(model);
+    
     }
 
     /**
@@ -37,9 +76,9 @@ public class CrudShelves extends javax.swing.JPanel {
         lbIdBook = new javax.swing.JLabel();
         lblIdUsers = new javax.swing.JLabel();
         jScrollPane = new javax.swing.JScrollPane();
-        tblBorrowed = new javax.swing.JTable();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
+        tblShelves = new javax.swing.JTable();
+        txtCategorie = new javax.swing.JTextField();
+        txtName = new javax.swing.JTextField();
 
         setLayout(null);
 
@@ -99,7 +138,7 @@ public class CrudShelves extends javax.swing.JPanel {
         add(lblIdUsers);
         lblIdUsers.setBounds(516, 116, 70, 16);
 
-        tblBorrowed.setModel(new javax.swing.table.DefaultTableModel(
+        tblShelves.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
@@ -107,93 +146,83 @@ public class CrudShelves extends javax.swing.JPanel {
 
             }
         ));
-        tblBorrowed.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        tblBorrowed.setDoubleBuffered(true);
-        tblBorrowed.setVerifyInputWhenFocusTarget(false);
-        tblBorrowed.addMouseListener(new java.awt.event.MouseAdapter() {
+        tblShelves.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        tblShelves.setDoubleBuffered(true);
+        tblShelves.setVerifyInputWhenFocusTarget(false);
+        tblShelves.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                tblBorrowedMouseClicked(evt);
+                tblShelvesMouseClicked(evt);
             }
         });
-        jScrollPane.setViewportView(tblBorrowed);
+        jScrollPane.setViewportView(tblShelves);
 
         add(jScrollPane);
         jScrollPane.setBounds(6, 36, 500, 307);
-        add(jTextField1);
-        jTextField1.setBounds(586, 116, 210, 24);
-        add(jTextField2);
-        jTextField2.setBounds(586, 86, 210, 24);
+        add(txtCategorie);
+        txtCategorie.setBounds(586, 116, 210, 24);
+        add(txtName);
+        txtName.setBounds(586, 86, 210, 24);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        //        //Borrowed borrowed  = new Borrowed();
-        //        Borrowed borrowed = new Borrowed();
-        //        //borrowed.setId(Integer.parseInt(txtIdBooks.getText()));
-        //        borrowed.setIdBooks((Books)cbIDBooks.getSelectedItem());
-        //        borrowed.setIdUsers((CrudUsers) cbIDUsers.getSelectedItem());
-        //        borrowed.setDate(dChoserDate.getDate());
-        //        borrowed.setDueDate(dChoserDueDate.getDate());
-        //        borrowed.setReturned(ReturnedTrue.isSelected());
-        //        BorrowedJpaController bjc = new BorrowedJpaController();
-        //        bjc.create(borrowed);
-        //        loadTable();
+        Shelves shelve = new Shelves();
+        
+        //shelve.setId(Integer.parseInt(txtId.getText()));
+        shelve.setName(txtName.getText());
+        shelve.setCategories(txtCategorie.getText());
+        
+        ShelvesJpaController sjc = new ShelvesJpaController();
+        sjc.create(shelve);
+        loadTable();
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        //        BorrowedJpaController bjc = new BorrowedJpaController();
-        //        try {
-            //            bjc.destroy(Integer.parseInt(txtId.getText()));
-            //        } catch (NonexistentEntityException ex) {
-            //            Logger.getLogger(WindowBorrowed.class.getName()).log(Level.SEVERE, null, ex);
-            //        }
+        ShelvesJpaController sjc = new ShelvesJpaController();
+        try {
+            sjc.destroy(Integer.parseInt(txtId.getText()));
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(CrudShelves.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        txtId.setText("");
+        txtName.setText("");
+        txtCategorie.setText("");
+        loadTable();
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        //        btnAdd.setEnabled(true);
-        //        btnDelete.setEnabled(false);
-        //        btnModify.setEnabled(false);
-        //        //dChoserDueDate.cleanup();
-        //        //btnExit.setEnabled(true);// TODO add your handling code here:
+        txtId.setText("");
+        txtName.setText("");
+        txtCategorie.setText("");
+        btnAdd.setEnabled(true);
+        btnDelete.setEnabled(false);
+        btnModify.setEnabled(false);
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        //        Borrowed borrowed = new Borrowed();
-        //        borrowed.setId(Integer.parseInt(txtId.getText()));
-        //        borrowed.setIdBooks((Books)cbIDBooks.getSelectedItem());
-        //        borrowed.setIdUsers((CrudUsers) cbIDUsers.getSelectedItem());
-        //        borrowed.setDate(dChoserDate.getDate());
-        //        borrowed.setDueDate(dChoserDueDate.getDate());
-        //        borrowed.setReturned(ReturnedTrue.isSelected());
-        //        BorrowedJpaController bjc = new BorrowedJpaController();
-        //
-        //        try {
-            //            bjc.edit(borrowed);
-            //        } catch (Exception ex) {
-            //            Logger.getLogger(WindowBorrowed.class.getName()).log(Level.SEVERE, null, ex);
-            //        }
-        //        loadTable();
+        Shelves shelve = new Shelves();
+        
+        shelve.setId(Integer.parseInt(txtId.getText()));
+        shelve.setName(txtName.getText());
+        shelve.setCategories(txtCategorie.getText());
+        
+        ShelvesJpaController sjc = new ShelvesJpaController();
+        try {
+            sjc.edit(shelve);
+        } catch (Exception ex) {
+            Logger.getLogger(CrudShelves.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        loadTable();
     }//GEN-LAST:event_btnModifyActionPerformed
 
-    private void tblBorrowedMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBorrowedMouseClicked
-        //        System.out.println(tblBorrowed.getValueAt(0, 1).getClass());
-        //        UsersJpaController ujc= new UsersJpaController();
-        //        CrudUsers u= (CrudUsers) tblBorrowed.getValueAt(0, 1);
-        //        txtId.setText(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),0)));
-        //        cbIDUsers.getModel().setSelectedItem(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),1));
-        //        cbIDBooks.getModel().setSelectedItem(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),2));
-        //
-        //        try {
-            //            dChoserDate.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),3))));
-            //            dChoserDueDate.setDate(new SimpleDateFormat("dd/MM/yyyy").parse(String.valueOf(tblBorrowed.getValueAt(tblBorrowed.getSelectedRow(),4))));
-            //
-            //        } catch (ParseException ex) {
-            //            Logger.getLogger(WindowBorrowed.class.getName()).log(Level.SEVERE, null, ex);
-            //        }
-        //        btnAdd.setEnabled(false);
-        //        btnDelete.setEnabled(true);
-        //        btnModify.setEnabled(true);
-        //        btnExit.setEnabled(true);
-    }//GEN-LAST:event_tblBorrowedMouseClicked
+    private void tblShelvesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblShelvesMouseClicked
+        txtId.setText(String.valueOf(tblShelves.getValueAt(tblShelves.getSelectedRow(),0)));
+        txtName.setText(String.valueOf(tblShelves.getValueAt(tblShelves.getSelectedRow(),1)));
+        txtCategorie.setText(String.valueOf(tblShelves.getValueAt(tblShelves.getSelectedRow(),2)));
+        btnAdd.setEnabled(false);
+        btnDelete.setEnabled(true);
+        btnModify.setEnabled(true);
+        btnExit.setEnabled(true);
+    }//GEN-LAST:event_tblShelvesMouseClicked
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -202,13 +231,13 @@ public class CrudShelves extends javax.swing.JPanel {
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnModify;
     private javax.swing.JScrollPane jScrollPane;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
     private javax.swing.JLabel lbIdBook;
     private javax.swing.JLabel lblId;
     private javax.swing.JLabel lblIdUsers;
     private javax.swing.JLabel lblLibrary;
-    private javax.swing.JTable tblBorrowed;
+    private javax.swing.JTable tblShelves;
+    private javax.swing.JTextField txtCategorie;
     private javax.swing.JTextField txtId;
+    private javax.swing.JTextField txtName;
     // End of variables declaration//GEN-END:variables
 }

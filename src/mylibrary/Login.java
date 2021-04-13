@@ -7,6 +7,7 @@ package mylibrary;
 
 import controller.UsersJpaController;
 import entities.Users;
+import java.util.Objects;
 
 
 
@@ -18,12 +19,13 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.DocumentFilter;
 import javax.swing.text.PlainDocument;
+import org.eclipse.persistence.expressions.ExpressionOperator;
 
 
 
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 public class Login extends javax.swing.JFrame {
 
@@ -107,16 +109,19 @@ public class Login extends javax.swing.JFrame {
             //System.out.println("vacio");
         }
         else{
-             user=ujc.findUsers(Integer.parseInt(txtUser.getText()));
-            //System.out.println(user.getPassword()); 
-            
+            user=ujc.findUsers(Integer.parseInt(txtUser.getText()));
+            if(Objects.isNull(user)){
+                JOptionPane.showMessageDialog(this, "Wrong user or password" );
+                return;
+            }
             if(user.getPassword().equals(String.valueOf(pwPassword.getPassword()))){
                 //System.out.println("bien");
                 (new MainWindow(user)).setVisible(true);
                 this.dispose();
             }
             else{
-                
+                JOptionPane.showMessageDialog(this, "Wrong user or password" );
+                return;
                 
             }
             

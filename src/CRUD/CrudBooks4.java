@@ -5,17 +5,78 @@
  */
 package CRUD;
 
+import controller.AuthorJpaController;
+import controller.BooksJpaController;
+import controller.BorrowedJpaController;
+import controller.ShelvesJpaController;
+import controller.UsersJpaController;
+import controller.exceptions.NonexistentEntityException;
+import entities.Author;
+import entities.Books;
+import entities.Borrowed;
+import entities.Shelves;
+import entities.Users;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
-public class CrudBooks extends javax.swing.JPanel {
+public class CrudBooks4 extends javax.swing.JPanel {
 
     /**
      * Creates new form NewJPanel
      */
-    public CrudBooks() {
+    public CrudBooks4() {
         initComponents();
+        loadTable();
+        btnAdd.setEnabled(true);
+        btnDelete.setEnabled(false);
+        btnModify.setEnabled(false);
+    }
+    private void loadTable(){
+        DefaultTableModel model= new DefaultTableModel();
+        model.addColumn("id");
+        model.addColumn("Title");
+        model.addColumn("Editorial");
+        model.addColumn("id Author");
+        model.addColumn("Existences");
+        model.addColumn("id Shelve");
+        List<Books> listBooks = new ArrayList<Books>();
+        BooksJpaController bjc =new BooksJpaController();
+        listBooks = bjc.findBooksEntities();
+
+        Object data[] =new Object[6];
+        
+        //Load objects to table.
+        for (Books b:listBooks){
+            data[0]=b.getId();
+            data[1]=b.getTitle();
+            data[2]=b.getEditorial();
+            data[3]=b.getIdAuthor();
+            data[4]=b.getExistences();
+            data[5]=b.getIdShelve();
+            model.addRow(data);
+        }
+        //load comboBox users
+        for (Shelves s:(new ShelvesJpaController()).findShelvesEntities()){
+            cbIDShelve.addItem(s);
+        }
+        //load Combobox Books
+        for (Author a:(new AuthorJpaController()).findAuthorEntities()){
+            cbIDAuthor.addItem(a);
+        }
+        tblBooks.setModel(model);
+        
+        
+        
+    
     }
 
     /**
@@ -36,9 +97,7 @@ public class CrudBooks extends javax.swing.JPanel {
         txtId = new javax.swing.JTextField();
         txtTitle = new javax.swing.JTextField();
         txtEditorial = new javax.swing.JTextField();
-        txtAuthor = new javax.swing.JTextField();
         txtExistences = new javax.swing.JTextField();
-        txtShelve = new javax.swing.JTextField();
         lblId = new javax.swing.JLabel();
         lblTitle = new javax.swing.JLabel();
         lblEditorial = new javax.swing.JLabel();
@@ -47,7 +106,8 @@ public class CrudBooks extends javax.swing.JPanel {
         lblShelve = new javax.swing.JLabel();
         jScrollPane = new javax.swing.JScrollPane();
         tblBooks = new javax.swing.JTable();
-        jFormattedTextField1 = new javax.swing.JFormattedTextField();
+        cbIDShelve = new javax.swing.JComboBox<>();
+        cbIDAuthor = new javax.swing.JComboBox<>();
 
         setLayout(null);
 
@@ -101,12 +161,8 @@ public class CrudBooks extends javax.swing.JPanel {
         txtTitle.setBounds(586, 86, 220, 24);
         booksPane.add(txtEditorial);
         txtEditorial.setBounds(586, 116, 220, 24);
-        booksPane.add(txtAuthor);
-        txtAuthor.setBounds(586, 146, 220, 24);
         booksPane.add(txtExistences);
         txtExistences.setBounds(586, 176, 220, 24);
-        booksPane.add(txtShelve);
-        txtShelve.setBounds(586, 206, 220, 24);
 
         lblId.setText("ID");
         booksPane.add(lblId);
@@ -120,17 +176,17 @@ public class CrudBooks extends javax.swing.JPanel {
         booksPane.add(lblEditorial);
         lblEditorial.setBounds(516, 116, 45, 16);
 
-        lblAuthor.setText("Author");
+        lblAuthor.setText("id Author");
         booksPane.add(lblAuthor);
-        lblAuthor.setBounds(516, 146, 35, 16);
+        lblAuthor.setBounds(516, 146, 48, 16);
 
         lblExistences.setText("Existences");
         booksPane.add(lblExistences);
         lblExistences.setBounds(516, 176, 60, 16);
 
-        lblShelve.setText("Shelve");
+        lblShelve.setText("id Shelve");
         booksPane.add(lblShelve);
-        lblShelve.setBounds(516, 206, 37, 16);
+        lblShelve.setBounds(516, 206, 60, 16);
 
         tblBooks.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -155,95 +211,90 @@ public class CrudBooks extends javax.swing.JPanel {
         booksPane.add(jScrollPane);
         jScrollPane.setBounds(6, 36, 500, 307);
 
-        jFormattedTextField1.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-        jFormattedTextField1.addActionListener(new java.awt.event.ActionListener() {
+        cbIDShelve.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jFormattedTextField1ActionPerformed(evt);
+                cbIDShelveActionPerformed(evt);
             }
         });
-        booksPane.add(jFormattedTextField1);
-        jFormattedTextField1.setBounds(580, 360, 210, 30);
+        booksPane.add(cbIDShelve);
+        cbIDShelve.setBounds(586, 206, 220, 26);
+
+        cbIDAuthor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cbIDAuthorActionPerformed(evt);
+            }
+        });
+        booksPane.add(cbIDAuthor);
+        cbIDAuthor.setBounds(586, 146, 220, 26);
 
         add(booksPane);
-        booksPane.setBounds(0, 0, 838, 474);
+        booksPane.setBounds(-140, 20, 838, 474);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddActionPerformed
-        //        Books books = new Books();
-        //        books.setAuthor(txtAuthor.getText());
-        //        books.setEditorial(txtEditorial.getText());
-        //        books.setExistences(Integer.parseInt(txtExistences.getText()));
-        //        //books.setId(WIDTH);
-        //        books.setShelve(txtShelve.getText());
-        //        books.setTitle(txtTitle.getText());
-        //        BooksJpaController bjc =new BooksJpaController();
-        //        bjc.create(books);
-        //        loadTable();
-        //        /*Book book = new Book(Integer.parseInt(txtId.getText()), txtTitle.getText(),
-            //            txtEditorial.getText(), txtAuthor.getText(),
-            //            Integer.parseInt(txtExistences.getText()), txtShelve.getText());
-        //
-        //        //System.out.print(book.toString());
-        //        if(book.add()){
-            //            JOptionPane.showMessageDialog(null,"Succesfully added");
-            //        }
-        //        else{
-            //            JOptionPane.showMessageDialog(null,"Problem");
-            //        }*/
-        //
-        //txtAuthor.getText();        // TODO add your handling code here:
+                Books books = new Books();
+                books.setIdAuthor((Author) cbIDAuthor.getSelectedItem());
+                books.setEditorial(txtEditorial.getText());
+                books.setExistences(Integer.parseInt(txtExistences.getText()));
+                //books.setId(WIDTH);
+                books.setIdShelve((Shelves) cbIDShelve.getSelectedItem());
+                books.setTitle(txtTitle.getText());
+                BooksJpaController bjc =new BooksJpaController();
+                bjc.create(books);
+                loadTable();
+                // TODO add your handling code here:
     }//GEN-LAST:event_btnAddActionPerformed
 
     private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
-        //        try {
-            //            Books books = new Books();
-            //            BooksJpaController bjc =new BooksJpaController();
-            //            System.out.println("entero = "+Integer.parseInt(txtId.getText()));
-            //            bjc.destroy(Integer.parseInt(txtId.getText()));
-            //            loadTable();
-            //
-            //            // TODO add your handling code here:
-            //        } catch (NonexistentEntityException ex) {
-            //            Logger.getLogger(Visual.class.getName()).log(Level.SEVERE, null, ex);
-            //        } catch (IllegalOrphanException ex) {
-            //            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            //        }
+            BooksJpaController bjc =new BooksJpaController();//    
+        try {
+            bjc.destroy(Integer.parseInt(txtId.getText()));
+        } catch (NonexistentEntityException ex) {
+            Logger.getLogger(CrudBooks4.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        loadTable();
+        btnAdd.setEnabled(true);
+        btnDelete.setEnabled(false);
+        btnModify.setEnabled(false);
+        
+        txtEditorial.setText("");
+        txtId.setText("");
+        txtExistences.setText("");
+        txtTitle.setText("");
+    
+        cbIDAuthor.setSelectedIndex(0);
+        cbIDShelve.setSelectedIndex(0);        
     }//GEN-LAST:event_btnDeleteActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
-        //        btnAdd.setEnabled(true);
-        //        btnDelete.setEnabled(false);
-        //        btnModify.setEnabled(false);
-        //        btnExit.setEnabled(false);
-        //        txtId.setText("");
-        //        txtTitle.setText("");
-        //        txtEditorial.setText("");
-        //        txtAuthor.setText("");
-        //        txtExistences.setText("");
-        //        txtShelve.setText("");
+        btnAdd.setEnabled(true);
+        btnDelete.setEnabled(false);
+        btnModify.setEnabled(false);
+        
+        txtEditorial.setText("");
+        txtId.setText("");
+        txtExistences.setText("");
+        txtTitle.setText("");
+    
+        cbIDAuthor.setSelectedIndex(0);
+        cbIDShelve.setSelectedIndex(0);   
     }//GEN-LAST:event_btnExitActionPerformed
 
     private void btnModifyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnModifyActionPerformed
-        //
-        //        //cambiar despues
-        //        int id= Integer.parseInt(txtId.getText());
-        //        Books books = new Books();
-        //        books.setId(id);
-        //        books.setAuthor(txtAuthor.getText());
-        //        books.setEditorial(txtEditorial.getText());
-        //        books.setExistences(Integer.parseInt(txtExistences.getText()));
-        //        //books.setId(WIDTH);
-        //        books.setShelve(txtShelve.getText());
-        //        books.setTitle(txtTitle.getText());
-        //        BooksJpaController bjc =new BooksJpaController();
-        //        try {
-            //            bjc.edit(books);
-            //        } catch (Exception ex) {
-            //            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            //        }
-        //        loadTable();
-        //
-        // TODO add your handling code here:
+        Books books = new Books();
+        books.setId(Integer.parseInt(txtId.getText()));
+        books.setIdAuthor((Author) cbIDAuthor.getSelectedItem());
+        books.setEditorial(txtEditorial.getText());
+        books.setExistences(Integer.parseInt(txtExistences.getText()));
+        books.setIdShelve((Shelves) cbIDShelve.getSelectedItem());
+        books.setTitle(txtTitle.getText());
+        BooksJpaController bjc =new BooksJpaController();
+        try {
+            bjc.edit(books);
+        } catch (Exception ex) {
+            Logger.getLogger(CrudBooks4.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        loadTable();
     }//GEN-LAST:event_btnModifyActionPerformed
 
     private void tblBooksMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBooksMouseClicked
@@ -251,19 +302,22 @@ public class CrudBooks extends javax.swing.JPanel {
         txtId.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 0)));
         txtTitle.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 1)));
         txtEditorial.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 2)));
-        txtAuthor.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 3)));
-        txtExistences.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 4)));
-        txtShelve.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 5)));
-
+        cbIDAuthor.getModel().setSelectedItem(tblBooks.getValueAt(tblBooks.getSelectedRow(),3));
+        txtExistences.setText(String.valueOf(tblBooks.getValueAt(tblBooks.getSelectedRow(), 4)));       
+        cbIDShelve.getModel().setSelectedItem(tblBooks.getValueAt(tblBooks.getSelectedRow(),5));
         btnAdd.setEnabled(false);
         btnDelete.setEnabled(true);
         btnModify.setEnabled(true);
         btnExit.setEnabled(true);
     }//GEN-LAST:event_tblBooksMouseClicked
 
-    private void jFormattedTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jFormattedTextField1ActionPerformed
+    private void cbIDShelveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbIDShelveActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jFormattedTextField1ActionPerformed
+    }//GEN-LAST:event_cbIDShelveActionPerformed
+
+    private void cbIDAuthorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbIDAuthorActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cbIDAuthorActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -272,7 +326,10 @@ public class CrudBooks extends javax.swing.JPanel {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnModify;
-    private javax.swing.JFormattedTextField jFormattedTextField1;
+    private javax.swing.JComboBox<Object
+    > cbIDAuthor;
+    private javax.swing.JComboBox<Object
+    > cbIDShelve;
     private javax.swing.JScrollPane jScrollPane;
     private javax.swing.JLabel lblAuthor;
     private javax.swing.JLabel lblEditorial;
@@ -282,11 +339,9 @@ public class CrudBooks extends javax.swing.JPanel {
     private javax.swing.JLabel lblShelve;
     private javax.swing.JLabel lblTitle;
     private javax.swing.JTable tblBooks;
-    private javax.swing.JTextField txtAuthor;
     private javax.swing.JTextField txtEditorial;
     private javax.swing.JTextField txtExistences;
     private javax.swing.JTextField txtId;
-    private javax.swing.JTextField txtShelve;
     private javax.swing.JTextField txtTitle;
     // End of variables declaration//GEN-END:variables
 }

@@ -20,7 +20,7 @@ import javax.persistence.Table;
 
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 @Entity
 @Table(name = "shelves")
@@ -106,7 +106,7 @@ public class Shelves implements Serializable {
 
     @Override
     public String toString() {
-        return "entities.Shelves[ id=" + id + " ]";
+        return name+", id:" + id;
     }
 
     public Collection<Books> getBooksCollection() {

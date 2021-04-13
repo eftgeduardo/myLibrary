@@ -20,7 +20,7 @@ import javax.persistence.criteria.Root;
 
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 public class UsersJpaController implements Serializable {
 

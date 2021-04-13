@@ -6,11 +6,15 @@
 package mylibrary;
 
 import CRUD.CrudAuthor;
-import CRUD.CrudBooks;
+import CRUD.CrudBook2;
+import CRUD.CrudBook;
+import CRUD.CrudBooks4;
 import CRUD.CrudShelves;
 import CRUD.CrudUsers;
-import CRUD.WindowBorrowed;
-import CRUD.WindowFines;
+import CRUD.CrudBorrowed;
+import CRUD.CrudFines;
+import controller.BooksJpaController;
+import controller.BorrowedJpaController;
 
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
@@ -18,14 +22,18 @@ import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import entities.Books;
+import entities.Borrowed;
 import entities.Users;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
  *
- * @author Ricardo
+ * @author Juan
  */
 public class MainWindow extends javax.swing.JFrame {
 
@@ -33,7 +41,7 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form Admin
      */
     private Users logInUser;
-    private int borrowedId=-1;//table selected borrowed id       
+    private int borrowedBookId=-1;//table selected borrowed id       
     public MainWindow(Users user) {
         boolean admin = user.getUserType();
         logInUser=user;
@@ -41,47 +49,45 @@ public class MainWindow extends javax.swing.JFrame {
         this.setResizable(false);
         loadSearchTable();
         
-        if(!admin){
-            tabbedPane.remove(0);
+        if(admin){
+            tabbedPane.addTab("Edit Borrow",(new CrudBorrowed()));
+            tabbedPane.addTab("Edit Fines",(new CrudFines()));
+            tabbedPane.addTab("Edit Author",(new CrudAuthor()));
+            tabbedPane.addTab("Edit Books",(new CrudBook()));
+            tabbedPane.addTab("Edit Shelves",(new CrudShelves()));
+            tabbedPane.addTab("Edit Users",(new CrudUsers()));
         }
-        tabbedPane.addTab("Edit Borrow",(new WindowBorrowed()));
-        tabbedPane.addTab("Edit Fines",(new WindowFines()));
-        tabbedPane.addTab("Edit Author",(new CrudAuthor()));
-        tabbedPane.addTab("Edit Books",(new CrudBooks()));
-        tabbedPane.addTab("Edit Shelves",(new CrudShelves()));
-        tabbedPane.addTab("Edit Users",(new CrudUsers()));
+        
         
         
     }
     private void loadSearchTable(){
-        /*DefaultTableModel model= new DefaultTableModel();
+        DefaultTableModel model= new DefaultTableModel();
         //`id`, `title`, `editorial`, `author`, `existences`, `shelve`
         model.addColumn("id");
-        model.addColumn("title");
-        model.addColumn("editorial");
-        model.addColumn("author");
-        model.addColumn("existences");
-        model.addColumn("shelve");
+        model.addColumn("Title");
+        model.addColumn("Editorial");
+        model.addColumn("id Author");
+        model.addColumn("Existences");
+        model.addColumn("id Shelve");
         List<Books> listBooks = new ArrayList<Books>();
         BooksJpaController bjc =new BooksJpaController();
         listBooks = bjc.findBooksEntities();
-        
 
-        String data[]=new String[6];
-        for (Books b: listBooks){
-            data[0]= String.valueOf(b.getId());
-            data[1]= b.getTitle();
-            data[2]= b.getEditorial();
-            data[3]= b.getAuthor();
-            data[4]= String.valueOf(b.getExistences());
-            data[5]= b.getShelve();
-            System.out.println(b.getTitle().contains("Mate"));
-            System.out.println(b.getTitle());
-            if(b.getTitle().toLowerCase().contains(String.valueOf(txtSearch.getText()).toLowerCase())){
-            model.addRow(data);}
+        Object data[] =new Object[6];
+        
+        //Load objects to table.
+        for (Books b:listBooks){
+            data[0]=b.getId();
+            data[1]=b.getTitle();
+            data[2]=b.getEditorial();
+            data[3]=b.getIdAuthor();
+            data[4]=b.getExistences();
+            data[5]=b.getIdShelve();
+            model.addRow(data);
         }
         tblBooksSearch.setModel(model); 
-    */
+    
     }
 
     /**
@@ -174,14 +180,39 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnBorrowBookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBorrowBookActionPerformed
-        // TODO add your handling code here:
+        if(borrowedBookId==-1)
+            return;
+        
         Date d =new Date();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        System.out.println(dateFormat.format(d));
+        Borrowed borrow = new Borrowed();
+    //set date
+        borrow.setDate(d);
+
+        Calendar c = Calendar.getInstance();
+        c.setTime(d);
+        c.add(Calendar.DAY_OF_MONTH, 10);
+    //set due date
+        borrow.setDueDate(c.getTime());
+    //set book id
+        borrow.setIdBooks((new BooksJpaController()).findBooks(borrowedBookId));
+    //set User
+        borrow.setIdUsers(logInUser);
+        
+        
+        BorrowedJpaController bjc = new BorrowedJpaController();
+        bjc.create(borrow);
+        txtSearch.setText("");
+        loadSearchTable();
+        JOptionPane.showMessageDialog(this, "you have borrowed: "+(new BooksJpaController()).findBooks(borrowedBookId).toString()  );
+        
         //d.
         //if(borrowedId!=-1)
     }//GEN-LAST:event_btnBorrowBookActionPerformed
 
     private void tblBooksSearchMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblBooksSearchMouseClicked
-        borrowedId= Integer.parseInt(String.valueOf(tblBooksSearch.getValueAt(tblBooksSearch.getSelectedRow(), 0)));
+        borrowedBookId= Integer.parseInt(String.valueOf(tblBooksSearch.getValueAt(tblBooksSearch.getSelectedRow(), 0)));
     }//GEN-LAST:event_tblBooksSearchMouseClicked
 
     private void txtSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSearchActionPerformed
@@ -190,7 +221,7 @@ public class MainWindow extends javax.swing.JFrame {
     //table 2
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         loadSearchTable();
-        borrowedId=-1;//set not selected borrowed id       
+        borrowedBookId=-1;//set not selected borrowed id       
     }//GEN-LAST:event_btnSearchActionPerformed
 
     private void btnLogOutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogOutActionPerformed
