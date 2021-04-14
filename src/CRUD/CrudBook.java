@@ -275,7 +275,7 @@ public class CrudBook extends javax.swing.JPanel {
         try {
             bjc.edit(books);
         } catch (Exception ex) {
-            Logger.getLogger(CrudBooks4.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CrudBook.class.getName()).log(Level.SEVERE, null, ex);
         }
         loadTable();
     }//GEN-LAST:event_btnModifyActionPerformed
